@@ -120,8 +120,8 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
                         let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))
                         weatherForecast.date = date
                         if let temperatures = forecast["temp"] as? Dictionary<String, AnyObject> {
-                            weatherForecast.minTemp = temperatures["min"] as? Double
-                            weatherForecast.maxTemp = temperatures["max"] as? Double
+                            weatherForecast.minTemp = (temperatures["min"] as? Double)! - 273.15
+                            weatherForecast.maxTemp = (temperatures["max"] as? Double)! - 273.15
                         }
                         if let weather = forecast["weather"] as? [Dictionary<String, AnyObject>] {
                             weatherForecast.weatherId = weather[0]["id"] as? Int
@@ -179,6 +179,12 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
                 cell.weatherTypeIcon.image = templateImage
                 cell.weatherTypeIcon.tintColor = UIColor.white
             }
+            if let minTemp = weatherArray[indexPath.row].minTemp {
+                cell.minTempLabel.text = "Min: \(String(format: "%.0f", minTemp))°C"
+            }
+            if let maxTemp = weatherArray[indexPath.row].maxTemp {
+                cell.maxTempLabel.text = "Max: \(String(format: "%.0f", maxTemp))°C"
+            }
         }
         return cell
     }
@@ -231,4 +237,12 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     }
     */
 
+}
+
+extension Double {
+    /// Rounds the double to decimal places value
+    func rounded(toPlaces places:Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return (self * divisor).rounded() / divisor
+    }
 }
