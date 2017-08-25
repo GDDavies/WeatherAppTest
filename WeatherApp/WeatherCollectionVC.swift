@@ -68,38 +68,50 @@ class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate
         print("Latitude: \(location.coordinate.latitude)")
         print("Longitude: \(location.coordinate.longitude)")
         print("Locality: \(placemark.locality!). Postal Code: \(placemark.postalCode!), Administrative Area: \(placemark.administrativeArea!), Country: \(placemark.country!)")
-        let locationLatitude = location.coordinate.latitude
-        let locationLongitude = location.coordinate.longitude
-        //if let encodedString = locationLatitude.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-            //getWeatherData(urlString: "http://api.openweathermap.org/data/2.5/weather?q=\(encodedString)&appid=ff3516b24bf01703355151a3ba0addc9")
-        print(locationLatitude)
-        print(locationLongitude)
-            getWeatherData(urlString: "api.openweathermap.org/data/2.5/forecast/daily?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&cnt=10&appid=ff3516b24bf01703355151a3ba0addc9")
-        //}
 
+        getWeatherData(urlString: "http://api.openweathermap.org/data/2.5/forecast/daily?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&cnt=10&appid=ff3516b24bf01703355151a3ba0addc9")
     }
     
     func getWeatherData(urlString: String) {
         let url = URL(string: urlString)
         
-        let task = URLSession.shared.dataTask(with: url!) { (data, response, error) in
+        let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
             DispatchQueue.main.async(execute: {
-                print(data)
-                //self.setLabel(weatherData: data!)
+                if let unwrappedData = data {
+                    // If successful pass data object to json variable as dictionary
+                    do {
+                        self.convertForecastJSON(weatherData: unwrappedData)
+                    } catch {
+                        // Error popup
+                        print("Error fetching data")
+                    }
+                } else {
+                    // Error popup
+                    print("Unable to retrieve data")
+                }
             })
-        }
-        
+        })
         task.resume()
-        
     }
     
-    func setLabel(weatherData: Data) {
+    func convertForecastJSON(weatherData: Data) {
         do {
             let json = try JSONSerialization.jsonObject(with: weatherData, options: []) as! Dictionary<String, AnyObject>
             
-            if let main = json["main"] as? Dictionary<String, AnyObject> {
-                if let temp = main["temp"] as? Double {
-                    print(String(format: "%.1f", temp))
+            if let cityData = json["city"] as? Dictionary<String, AnyObject> {
+                if let cityName = cityData["name"] as? String {
+                    print(cityName)
+                }
+            }
+            if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
+                let date = forecastData[0]["dt"]
+                print(date)
+                if let temperatures = forecastData[0]["temp"] as? Dictionary<String, AnyObject> {
+                    print(temperatures["min"])
+                    print(temperatures["max"])
+                }
+                if let weather = forecastData[0]["weather"] as? [Dictionary<String, AnyObject>] {
+                    print(weather)
                 }
             }
         } catch {
