@@ -100,7 +100,14 @@
                             </label>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vdL-fu-CbJ">
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <items/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="QSz-rp-rsY"/>
+                                    <barButtonItem systemItem="action" id="OfU-RH-cjT">
+                                        <connections>
+                                            <action selector="shareWeatherAction:" destination="DRZ-yQ-KaX" id="r16-Md-6qR"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -118,17 +125,67 @@
                     </view>
                     <navigationItem key="navigationItem" title="Weather App" id="trd-8T-ODW">
                         <barButtonItem key="leftBarButtonItem" title="Settings" id="wUu-rM-SjJ"/>
-                        <barButtonItem key="rightBarButtonItem" title="Map" id="hgS-WK-sS4"/>
+                        <barButtonItem key="rightBarButtonItem" title="Map" id="hgS-WK-sS4">
+                            <connections>
+                                <segue destination="iWA-No-fKC" kind="show" identifier="ShowMapView" id="5sg-oa-UIF"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="cityNameLabel" destination="meD-U4-L20" id="lZF-0j-kIZ"/>
-                        <outlet property="toolBar" destination="vdL-fu-CbJ" id="pdm-OA-TVV"/>
+                        <outlet property="shareWeatherButton" destination="OfU-RH-cjT" id="KhY-3X-bVd"/>
                         <outlet property="weatherCollectionView" destination="MjT-jG-9io" id="Tf8-XT-wPK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XMF-ZM-tVl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3736.8000000000002" y="-563.56821589205401"/>
+        </scene>
+        <!--MapVC-->
+        <scene sceneID="GpJ-SC-kOj">
+            <objects>
+                <viewController id="iWA-No-fKC" customClass="MapVC" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="gxS-Ym-WGj"/>
+                        <viewControllerLayoutGuide type="bottom" id="JcA-0j-S9M"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="9di-aV-hV6">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mgO-hW-IXp">
+                                <rect key="frame" x="0.0" y="108" width="375" height="559"/>
+                            </mapView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="cW7-oL-7Cn">
+                                <rect key="frame" x="37" y="72" width="300" height="29"/>
+                                <segments>
+                                    <segment title="Map"/>
+                                    <segment title="Satelite"/>
+                                    <segment title="Hybrid"/>
+                                </segments>
+                                <connections>
+                                    <action selector="mapTypeSegmentedControl:" destination="iWA-No-fKC" eventType="valueChanged" id="ZqS-AN-XtE"/>
+                                </connections>
+                            </segmentedControl>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="mgO-hW-IXp" secondAttribute="trailing" id="0Mu-6F-yCo"/>
+                            <constraint firstItem="mgO-hW-IXp" firstAttribute="leading" secondItem="9di-aV-hV6" secondAttribute="leading" id="5Ik-25-rPr"/>
+                            <constraint firstItem="cW7-oL-7Cn" firstAttribute="centerX" secondItem="9di-aV-hV6" secondAttribute="centerX" id="AcD-9M-yQT"/>
+                            <constraint firstItem="cW7-oL-7Cn" firstAttribute="top" secondItem="gxS-Ym-WGj" secondAttribute="bottom" constant="8" id="P5m-5y-BjZ"/>
+                            <constraint firstItem="mgO-hW-IXp" firstAttribute="top" secondItem="cW7-oL-7Cn" secondAttribute="bottom" constant="8" id="ksg-Gu-Cq5"/>
+                            <constraint firstItem="JcA-0j-S9M" firstAttribute="top" secondItem="mgO-hW-IXp" secondAttribute="bottom" id="sU9-lK-iX2"/>
+                            <constraint firstItem="cW7-oL-7Cn" firstAttribute="width" secondItem="9di-aV-hV6" secondAttribute="width" multiplier="0.8" id="zri-6a-Zoq"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="mgO-hW-IXp" id="Dfp-x8-b8P"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GSg-qb-BKE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4541.6000000000004" y="-842.42878560719646"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="XPp-g4-ybC">

@@ -14,8 +14,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
 
     @IBOutlet weak var weatherCollectionView: UICollectionView!
     @IBOutlet weak var cityNameLabel: UILabel!
-    
-    @IBOutlet weak var toolBar: UIToolbar!
+    @IBOutlet weak var shareWeatherButton: UIBarButtonItem!
     
     // MARK: - Properties
     fileprivate let reuseIdentifier = "DayCell"
@@ -35,7 +34,8 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
 
         // Register cell classes
         //weatherCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        shareActionStatus(enabled: false)
+        shareWeatherButton.isEnabled = false
+        weatherCollectionView.allowsMultipleSelection = false
         findLocation()
     }
 
@@ -56,6 +56,9 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        
+        
         CLGeocoder().reverseGeocodeLocation(manager.location!) { (placemarks, error) in
             if (error != nil) {
                 print("Error: " + error!.localizedDescription)
@@ -73,10 +76,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     
     func getLocationDetails(placemark: CLPlacemark, location: CLLocation) {
         locationManager.stopUpdatingLocation()
-//        print("Latitude: \(location.coordinate.latitude)")
-//        print("Longitude: \(location.coordinate.longitude)")
-//        print("Locality: \(placemark.locality!). Postal Code: \(placemark.postalCode!), Administrative Area: \(placemark.administrativeArea!), Country: \(placemark.country!)")
-
         getWeatherData(urlString: "http://api.openweathermap.org/data/2.5/forecast/daily?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&cnt=10&appid=\(apiKey)")
     }
     
@@ -143,15 +142,16 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         }
     }
 
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "ShowMapView" {
+            if let destinationVC = segue.destination as? MapVC {
+                destinationVC.location = locationManager.location
+            }
+        }
     }
-    */
 
     // MARK: UICollectionViewDataSource
 
@@ -213,7 +213,12 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     // MARK: UICollectionViewDelegate
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        shareActionStatus(enabled: true)
+        let cell = weatherCollectionView.cellForItem(at: indexPath)
+        cell?.layer.borderColor = UIColor.lightGray.cgColor
+        cell!.layer.borderWidth = 3.0
+        if !shareWeatherButton.isEnabled {
+            shareWeatherButton.isEnabled = true
+        }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM"
         if let weatherDate = weatherArray[indexPath.row].date {
@@ -228,25 +233,25 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         }
     }
     
-    func shareWeather(sender: UIButton) {
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        let cell = weatherCollectionView.cellForItem(at: indexPath)
+        cell?.layer.borderColor = UIColor.clear.cgColor
+        cell!.layer.borderWidth = 0.0
+    }
+    
+    @IBAction func shareWeatherAction(_ sender: UIBarButtonItem) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM"
         if let weatherDate = weatherArray[(selectedIndex?.row)!].date {
             if let weatherDesc = weatherArray[(selectedIndex?.row)!].weatherDescription {
                 let stringToShareArray = [dateFormatter.string(from: weatherDate), weatherDesc]
                 let activityVC = UIActivityViewController(activityItems: stringToShareArray, applicationActivities: nil)
-                activityVC.popoverPresentationController?.sourceView = sender
+                activityVC.popoverPresentationController?.sourceView = view
                 self.present(activityVC, animated: true, completion: nil)
             }
         }
     }
     
-    func shareActionStatus(enabled: Bool) {
-        let flexible = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: self, action: nil)
-        let shareAction: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(shareWeather(sender:)))
-        toolBar.items = [flexible, shareAction]
-        shareAction.isEnabled = enabled
-    }
     
 //    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
 //        <#code#>
