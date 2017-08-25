@@ -9,14 +9,19 @@
 import UIKit
 import CoreLocation
 
-private let reuseIdentifier = "DayCell"
-private let apiKey = "ff3516b24bf01703355151a3ba0addc9"
+class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource, CLLocationManagerDelegate {
 
-class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate {
-
-    let locationManager = CLLocationManager()
+    @IBOutlet weak var weatherCollectionView: UICollectionView!
+    @IBOutlet weak var cityNameLabel: UILabel!
     
-    var weatherArray = [DayWeather]()
+    // MARK: - Properties
+    fileprivate let reuseIdentifier = "DayCell"
+    fileprivate let sectionInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
+    fileprivate let apiKey = "ff3516b24bf01703355151a3ba0addc9"
+    fileprivate let itemsPerRow: CGFloat = 2
+    
+    fileprivate let locationManager = CLLocationManager()
+    fileprivate var weatherArray = [DayWeather]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,9 +30,7 @@ class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate
         // self.clearsSelectionOnViewWillAppear = false
 
         // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-
-        // Do any additional setup after loading the view.
+        //weatherCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
         findLocation()
     }
@@ -105,6 +108,7 @@ class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate
                 if let cityData = json["city"] as? Dictionary<String, AnyObject> {
                     if let cityName = cityData["name"] as? String {
                         city = cityName
+                        cityNameLabel.text = city
                     }
                 }
                 if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
@@ -128,6 +132,7 @@ class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate
                         weatherArray.append(weatherForecast)
                     }
                 }
+                weatherCollectionView.reloadData()
             } catch {
                 print("Error fetching data")
             }
@@ -146,23 +151,53 @@ class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate
 
     // MARK: UICollectionViewDataSource
 
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
 
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 0
+        return weatherArray.count
     }
 
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-    
-        // Configure the cell
-    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! WeatherCollectionViewCell
+        cell.backgroundColor = UIColor(red: 41/255, green: 128/255, blue: 185/255, alpha: 1.0)
+        
+        if !weatherArray.isEmpty {
+            if let weatherDate = weatherArray[indexPath.row].date {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "d MMM"
+                cell.dateLabel.text = dateFormatter.string(from: weatherDate)
+                
+            }
+            if let weatherIcon = weatherArray[indexPath.row].weatherIcon {
+                let image = UIImage(named: "\(weatherIcon).png")
+                let templateImage = image?.withRenderingMode(.alwaysTemplate)
+                cell.weatherTypeIcon.image = templateImage
+                cell.weatherTypeIcon.tintColor = UIColor.white
+            }
+        }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
+        let availableWidth = view.frame.width - paddingSpace
+        let widthPerItem = availableWidth / itemsPerRow
+        
+        return CGSize(width: widthPerItem, height: widthPerItem)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return sectionInsets
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return sectionInsets.left
     }
 
     // MARK: UICollectionViewDelegate
