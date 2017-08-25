@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import AVFoundation
 
 class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource, CLLocationManagerDelegate {
 
@@ -208,6 +209,20 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
 
     // MARK: UICollectionViewDelegate
 
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMMM"
+        if let weatherDate = weatherArray[indexPath.row].date {
+            if let weatherDesc = weatherArray[indexPath.row].weatherDescription {
+                let string = "\(dateFormatter.string(from: weatherDate)) \(weatherDesc)"
+                let utterance = AVSpeechUtterance(string: string)
+                utterance.voice = AVSpeechSynthesisVoice(language: "en-GB")
+                let synthesizer = AVSpeechSynthesizer()
+                synthesizer.speak(utterance)
+            }
+        }
+    }
+    
     /*
     // Uncomment this method to specify if the specified item should be highlighted during tracking
     override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
