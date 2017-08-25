@@ -25,7 +25,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="MjT-jG-9io">
-                                <rect key="frame" x="0.0" y="140" width="375" height="527"/>
+                                <rect key="frame" x="0.0" y="140" width="375" height="483"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="n4t-oW-vep">
                                     <size key="itemSize" width="123" height="123"/>
@@ -98,6 +98,10 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vdL-fu-CbJ">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <items/>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -105,8 +109,11 @@
                             <constraint firstItem="MjT-jG-9io" firstAttribute="top" secondItem="meD-U4-L20" secondAttribute="bottom" constant="8" id="3cA-Ng-Ic7"/>
                             <constraint firstItem="meD-U4-L20" firstAttribute="top" secondItem="ljp-5B-A4Y" secondAttribute="bottom" constant="8" id="6ed-7a-lG1"/>
                             <constraint firstItem="MjT-jG-9io" firstAttribute="leading" secondItem="8QY-zr-Qqp" secondAttribute="leading" id="8AE-t5-0cj"/>
-                            <constraint firstItem="8lS-Io-PDG" firstAttribute="top" secondItem="MjT-jG-9io" secondAttribute="bottom" id="GBf-xP-Nfd"/>
+                            <constraint firstItem="8lS-Io-PDG" firstAttribute="top" secondItem="vdL-fu-CbJ" secondAttribute="bottom" id="Ds2-Lb-qPu"/>
+                            <constraint firstItem="vdL-fu-CbJ" firstAttribute="leading" secondItem="8QY-zr-Qqp" secondAttribute="leading" id="F35-hi-Hhw"/>
+                            <constraint firstAttribute="trailing" secondItem="vdL-fu-CbJ" secondAttribute="trailing" id="VZv-Yz-pza"/>
                             <constraint firstAttribute="trailing" secondItem="MjT-jG-9io" secondAttribute="trailing" id="Vjx-xZ-z2c"/>
+                            <constraint firstItem="vdL-fu-CbJ" firstAttribute="top" secondItem="MjT-jG-9io" secondAttribute="bottom" id="dt7-xX-F3V"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Weather App" id="trd-8T-ODW">
@@ -115,6 +122,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="cityNameLabel" destination="meD-U4-L20" id="lZF-0j-kIZ"/>
+                        <outlet property="toolBar" destination="vdL-fu-CbJ" id="pdm-OA-TVV"/>
                         <outlet property="weatherCollectionView" destination="MjT-jG-9io" id="Tf8-XT-wPK"/>
                     </connections>
                 </viewController>

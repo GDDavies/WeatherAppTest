@@ -15,6 +15,8 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     @IBOutlet weak var weatherCollectionView: UICollectionView!
     @IBOutlet weak var cityNameLabel: UILabel!
     
+    @IBOutlet weak var toolBar: UIToolbar!
+    
     // MARK: - Properties
     fileprivate let reuseIdentifier = "DayCell"
     fileprivate let sectionInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
@@ -23,6 +25,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     
     fileprivate let locationManager = CLLocationManager()
     fileprivate var weatherArray = [DayWeather]()
+    var selectedIndex: IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +35,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
 
         // Register cell classes
         //weatherCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        
+        shareActionStatus(enabled: false)
         findLocation()
     }
 
@@ -210,6 +213,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     // MARK: UICollectionViewDelegate
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        shareActionStatus(enabled: true)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM"
         if let weatherDate = weatherArray[indexPath.row].date {
@@ -219,9 +223,34 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
                 utterance.voice = AVSpeechSynthesisVoice(language: "en-GB")
                 let synthesizer = AVSpeechSynthesizer()
                 synthesizer.speak(utterance)
+                selectedIndex = indexPath
             }
         }
     }
+    
+    func shareWeather(sender: UIButton) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMMM"
+        if let weatherDate = weatherArray[(selectedIndex?.row)!].date {
+            if let weatherDesc = weatherArray[(selectedIndex?.row)!].weatherDescription {
+                let stringToShareArray = [dateFormatter.string(from: weatherDate), weatherDesc]
+                let activityVC = UIActivityViewController(activityItems: stringToShareArray, applicationActivities: nil)
+                activityVC.popoverPresentationController?.sourceView = sender
+                self.present(activityVC, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func shareActionStatus(enabled: Bool) {
+        let flexible = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: self, action: nil)
+        let shareAction: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(shareWeather(sender:)))
+        toolBar.items = [flexible, shareAction]
+        shareAction.isEnabled = enabled
+    }
+    
+//    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+//        <#code#>
+//    }
     
     /*
     // Uncomment this method to specify if the specified item should be highlighted during tracking
