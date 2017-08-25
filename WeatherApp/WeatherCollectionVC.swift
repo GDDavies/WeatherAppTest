@@ -16,7 +16,7 @@ class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate
 
     let locationManager = CLLocationManager()
     
-    let weatherArray = [DayWeather]()
+    var weatherArray = [DayWeather]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -96,34 +96,41 @@ class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate
     }
     
     func convertForecastJSON(weatherData: Data) {
-        do {
-            let json = try JSONSerialization.jsonObject(with: weatherData, options: []) as! Dictionary<String, AnyObject>
-            
-            let weatherForecast = DayWeather()
-            
-            if let cityData = json["city"] as? Dictionary<String, AnyObject> {
-                if let cityName = cityData["name"] as? String {
-                    weatherForecast.city = cityName
+        if weatherArray.isEmpty {
+            do {
+                let json = try JSONSerialization.jsonObject(with: weatherData, options: []) as! Dictionary<String, AnyObject>
+                
+                var city: String?
+                
+                if let cityData = json["city"] as? Dictionary<String, AnyObject> {
+                    if let cityName = cityData["name"] as? String {
+                        city = cityName
+                    }
                 }
+                if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
+                    for forecast in forecastData {
+                        let weatherForecast = DayWeather()
+                        weatherForecast.city = city
+
+                        let epochTime = forecast["dt"] as? Int
+                        let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))
+                        weatherForecast.date = date
+                        if let temperatures = forecast["temp"] as? Dictionary<String, AnyObject> {
+                            weatherForecast.minTemp = temperatures["min"] as? Double
+                            weatherForecast.maxTemp = temperatures["max"] as? Double
+                        }
+                        if let weather = forecast["weather"] as? [Dictionary<String, AnyObject>] {
+                            weatherForecast.weatherId = weather[0]["id"] as? Int
+                            weatherForecast.weatherMain = weather[0]["main"] as? String
+                            weatherForecast.weatherDescription = weather[0]["description"] as? String
+                            weatherForecast.weatherIcon = weather[0]["icon"] as? String
+                        }
+                        weatherArray.append(weatherForecast)
+                    }
+                }
+            } catch {
+                print("Error fetching data")
             }
-            if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
-                let epochTime = forecastData[0]["dt"] as? Int
-                let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))
-                weatherForecast.date = date
-                if let temperatures = forecastData[0]["temp"] as? Dictionary<String, AnyObject> {
-                    weatherForecast.minTemp = temperatures["min"] as? Double
-                    weatherForecast.maxTemp = temperatures["max"] as? Double
-                }
-                if let weather = forecastData[0]["weather"] as? [Dictionary<String, AnyObject>] {
-                    weatherForecast.weatherId = weather[0]["id"] as? Int
-                    weatherForecast.weatherMain = weather[0]["main"] as? String
-                    weatherForecast.weatherDescription = weather[0]["description"] as? String
-                    weatherForecast.weatherIcon = weather[0]["icon"] as? String
-                }
-            }
-            print(weatherForecast.city)
-        } catch {
-            print("Error fetching data")
         }
     }
 
