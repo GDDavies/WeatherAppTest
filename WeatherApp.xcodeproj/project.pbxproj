@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		937DFF511F50649500C04FAD /* DayWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937DFF501F50649500C04FAD /* DayWeather.swift */; };
 		93CBC7061F50449A00B4FE54 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93CBC7051F50449A00B4FE54 /* AppDelegate.swift */; };
 		93CBC70B1F50449A00B4FE54 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93CBC7091F50449A00B4FE54 /* Main.storyboard */; };
 		93CBC70D1F50449A00B4FE54 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93CBC70C1F50449A00B4FE54 /* Assets.xcassets */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		937DFF501F50649500C04FAD /* DayWeather.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayWeather.swift; sourceTree = "<group>"; };
 		93CBC7021F50449A00B4FE54 /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93CBC7051F50449A00B4FE54 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		93CBC70A1F50449A00B4FE54 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				93CBC7191F5045B900B4FE54 /* WeatherCollectionVC.swift */,
 				93CBC7091F50449A00B4FE54 /* Main.storyboard */,
 				93CBC71B1F5045E600B4FE54 /* WeatherDataManager.swift */,
+				937DFF501F50649500C04FAD /* DayWeather.swift */,
 				93CBC70C1F50449A00B4FE54 /* Assets.xcassets */,
 				93CBC70E1F50449A00B4FE54 /* LaunchScreen.storyboard */,
 				93CBC7111F50449A00B4FE54 /* Info.plist */,
@@ -153,6 +156,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				93CBC71C1F5045E600B4FE54 /* WeatherDataManager.swift in Sources */,
+				937DFF511F50649500C04FAD /* DayWeather.swift in Sources */,
 				93CBC7061F50449A00B4FE54 /* AppDelegate.swift in Sources */,
 				93CBC71A1F5045B900B4FE54 /* WeatherCollectionVC.swift in Sources */,
 			);
@@ -322,6 +326,7 @@
 				93CBC7161F50449A00B4FE54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

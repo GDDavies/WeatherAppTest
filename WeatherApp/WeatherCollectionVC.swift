@@ -10,10 +10,13 @@ import UIKit
 import CoreLocation
 
 private let reuseIdentifier = "DayCell"
+private let apiKey = "ff3516b24bf01703355151a3ba0addc9"
 
 class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate {
 
     let locationManager = CLLocationManager()
+    
+    let weatherArray = [DayWeather]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,12 +38,10 @@ class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate
     }
     
     func findLocation() {
-        
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
-        
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -65,11 +66,11 @@ class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate
     
     func getLocationDetails(placemark: CLPlacemark, location: CLLocation) {
         locationManager.stopUpdatingLocation()
-        print("Latitude: \(location.coordinate.latitude)")
-        print("Longitude: \(location.coordinate.longitude)")
-        print("Locality: \(placemark.locality!). Postal Code: \(placemark.postalCode!), Administrative Area: \(placemark.administrativeArea!), Country: \(placemark.country!)")
+//        print("Latitude: \(location.coordinate.latitude)")
+//        print("Longitude: \(location.coordinate.longitude)")
+//        print("Locality: \(placemark.locality!). Postal Code: \(placemark.postalCode!), Administrative Area: \(placemark.administrativeArea!), Country: \(placemark.country!)")
 
-        getWeatherData(urlString: "http://api.openweathermap.org/data/2.5/forecast/daily?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&cnt=10&appid=ff3516b24bf01703355151a3ba0addc9")
+        getWeatherData(urlString: "http://api.openweathermap.org/data/2.5/forecast/daily?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&cnt=10&appid=\(apiKey)")
     }
     
     func getWeatherData(urlString: String) {
@@ -98,22 +99,29 @@ class WeatherCollectionVC: UICollectionViewController, CLLocationManagerDelegate
         do {
             let json = try JSONSerialization.jsonObject(with: weatherData, options: []) as! Dictionary<String, AnyObject>
             
+            let weatherForecast = DayWeather()
+            
             if let cityData = json["city"] as? Dictionary<String, AnyObject> {
                 if let cityName = cityData["name"] as? String {
-                    print(cityName)
+                    weatherForecast.city = cityName
                 }
             }
             if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
-                let date = forecastData[0]["dt"]
-                print(date)
+                let epochTime = forecastData[0]["dt"] as? Int
+                let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))
+                weatherForecast.date = date
                 if let temperatures = forecastData[0]["temp"] as? Dictionary<String, AnyObject> {
-                    print(temperatures["min"])
-                    print(temperatures["max"])
+                    weatherForecast.minTemp = temperatures["min"] as? Double
+                    weatherForecast.maxTemp = temperatures["max"] as? Double
                 }
                 if let weather = forecastData[0]["weather"] as? [Dictionary<String, AnyObject>] {
-                    print(weather)
+                    weatherForecast.weatherId = weather[0]["id"] as? Int
+                    weatherForecast.weatherMain = weather[0]["main"] as? String
+                    weatherForecast.weatherDescription = weather[0]["description"] as? String
+                    weatherForecast.weatherIcon = weather[0]["icon"] as? String
                 }
             }
+            print(weatherForecast.city)
         } catch {
             print("Error fetching data")
         }
