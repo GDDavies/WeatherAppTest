@@ -26,14 +26,20 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     fileprivate var weatherArray = [DayWeather]()
     var selectedIndex: IndexPath?
     
+    var newLocation: CLLocation?
+    
+    @IBAction func unwind(_ segue: UIStoryboardSegue) {
+        if let origin = segue.source as? MapVC {
+            newLocation = origin.newLocation
+            if let latitude = newLocation?.coordinate.latitude {
+                getWeatherData(latitude: latitude, longitude: (newLocation?.coordinate.longitude)!)
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Register cell classes
-        //weatherCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         shareWeatherButton.isEnabled = false
         weatherCollectionView.allowsMultipleSelection = false
         findLocation()
@@ -57,8 +63,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        
-        
         CLGeocoder().reverseGeocodeLocation(manager.location!) { (placemarks, error) in
             if (error != nil) {
                 print("Error: " + error!.localizedDescription)
@@ -74,13 +78,17 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         }
     }
     
-    func getLocationDetails(placemark: CLPlacemark, location: CLLocation) {
-        locationManager.stopUpdatingLocation()
-        getWeatherData(urlString: "http://api.openweathermap.org/data/2.5/forecast/daily?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&cnt=10&appid=\(apiKey)")
+    func getLocationFromCoOrdinates() {
+        
     }
     
-    func getWeatherData(urlString: String) {
-        let url = URL(string: urlString)
+    func getLocationDetails(placemark: CLPlacemark, location: CLLocation) {
+        locationManager.stopUpdatingLocation()
+        getWeatherData(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+    }
+    
+    func getWeatherData(latitude: Double, longitude: Double) {
+        let url = URL(string: "http://api.openweathermap.org/data/2.5/forecast/daily?lat=\(latitude)&lon=\(longitude)&cnt=10&appid=\(apiKey)")
         
         let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
             DispatchQueue.main.async(execute: {
@@ -102,43 +110,42 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     }
     
     func convertForecastJSON(weatherData: Data) {
-        if weatherArray.isEmpty {
-            do {
-                let json = try JSONSerialization.jsonObject(with: weatherData, options: []) as! Dictionary<String, AnyObject>
-                
-                var city: String?
-                
-                if let cityData = json["city"] as? Dictionary<String, AnyObject> {
-                    if let cityName = cityData["name"] as? String {
-                        city = cityName
-                        cityNameLabel.text = city
-                    }
+        weatherArray.removeAll()
+        do {
+            let json = try JSONSerialization.jsonObject(with: weatherData, options: []) as! Dictionary<String, AnyObject>
+            
+            var city: String?
+            
+            if let cityData = json["city"] as? Dictionary<String, AnyObject> {
+                if let cityName = cityData["name"] as? String {
+                    city = cityName
+                    cityNameLabel.text = city
                 }
-                if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
-                    for forecast in forecastData {
-                        let weatherForecast = DayWeather()
-                        weatherForecast.city = city
-
-                        let epochTime = forecast["dt"] as? Int
-                        let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))
-                        weatherForecast.date = date
-                        if let temperatures = forecast["temp"] as? Dictionary<String, AnyObject> {
-                            weatherForecast.minTemp = (temperatures["min"] as? Double)! - 273.15
-                            weatherForecast.maxTemp = (temperatures["max"] as? Double)! - 273.15
-                        }
-                        if let weather = forecast["weather"] as? [Dictionary<String, AnyObject>] {
-                            weatherForecast.weatherId = weather[0]["id"] as? Int
-                            weatherForecast.weatherMain = weather[0]["main"] as? String
-                            weatherForecast.weatherDescription = weather[0]["description"] as? String
-                            weatherForecast.weatherIcon = weather[0]["icon"] as? String
-                        }
-                        weatherArray.append(weatherForecast)
-                    }
-                }
-                weatherCollectionView.reloadData()
-            } catch {
-                print("Error fetching data")
             }
+            if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
+                for forecast in forecastData {
+                    let weatherForecast = DayWeather()
+                    weatherForecast.city = city
+
+                    let epochTime = forecast["dt"] as? Int
+                    let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))
+                    weatherForecast.date = date
+                    if let temperatures = forecast["temp"] as? Dictionary<String, AnyObject> {
+                        weatherForecast.minTemp = (temperatures["min"] as? Double)! - 273.15
+                        weatherForecast.maxTemp = (temperatures["max"] as? Double)! - 273.15
+                    }
+                    if let weather = forecast["weather"] as? [Dictionary<String, AnyObject>] {
+                        weatherForecast.weatherId = weather[0]["id"] as? Int
+                        weatherForecast.weatherMain = weather[0]["main"] as? String
+                        weatherForecast.weatherDescription = weather[0]["description"] as? String
+                        weatherForecast.weatherIcon = weather[0]["icon"] as? String
+                    }
+                    weatherArray.append(weatherForecast)
+                }
+            }
+            weatherCollectionView.reloadData()
+        } catch {
+            print("Error fetching data")
         }
     }
 
