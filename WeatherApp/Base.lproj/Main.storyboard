@@ -141,10 +141,10 @@
             </objects>
             <point key="canvasLocation" x="3736.8000000000002" y="-563.56821589205401"/>
         </scene>
-        <!--MapVC-->
+        <!--Map ViewVC-->
         <scene sceneID="GpJ-SC-kOj">
             <objects>
-                <viewController id="iWA-No-fKC" customClass="MapVC" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="iWA-No-fKC" customClass="MapViewVC" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gxS-Ym-WGj"/>
                         <viewControllerLayoutGuide type="bottom" id="JcA-0j-S9M"/>

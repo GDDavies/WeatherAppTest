@@ -10,11 +10,12 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class MapVC: UIViewController {
+class MapViewVC: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
     var location: CLLocation?
     var newLocation: CLLocation?
+    var newCityName: String?
     var resultSearchController: UISearchController?
     
     @IBAction func mapTypeSegmentedControl(_ sender: UISegmentedControl) {
@@ -87,8 +88,11 @@ class MapVC: UIViewController {
         if let cityName = text {
             let geocoder = CLGeocoder()
             geocoder.geocodeAddressString(cityName, completionHandler: { (placemarks, error) -> Void in
-                if (placemarks?[0]) != nil {
+                if let err = error {
+                    print(err)
+                } else if (placemarks?[0]) != nil {
                     let placemark = placemarks?.first!
+                    self.newCityName = placemark?.locality
                     self.newLocation = placemark?.location
                     self.goToLocationOnMap(location: self.newLocation!)
 

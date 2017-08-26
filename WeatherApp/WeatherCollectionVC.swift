@@ -27,10 +27,12 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     var selectedIndex: IndexPath?
     
     var newLocation: CLLocation?
+    var newCityName: String?
     
     @IBAction func unwind(_ segue: UIStoryboardSegue) {
-        if let origin = segue.source as? MapVC {
+        if let origin = segue.source as? MapViewVC {
             newLocation = origin.newLocation
+            newCityName = origin.newCityName
             if let latitude = newLocation?.coordinate.latitude {
                 getWeatherData(latitude: latitude, longitude: (newLocation?.coordinate.longitude)!)
             }
@@ -115,11 +117,14 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
             let json = try JSONSerialization.jsonObject(with: weatherData, options: []) as! Dictionary<String, AnyObject>
             
             var city: String?
-            
-            if let cityData = json["city"] as? Dictionary<String, AnyObject> {
-                if let cityName = cityData["name"] as? String {
-                    city = cityName
-                    cityNameLabel.text = city
+            if let cityName = newCityName {
+                cityNameLabel.text = cityName
+            } else {
+                if let cityData = json["city"] as? Dictionary<String, AnyObject> {
+                    if let cityName = cityData["name"] as? String {
+                        city = cityName
+                        cityNameLabel.text = city
+                    }
                 }
             }
             if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
@@ -154,7 +159,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowMapView" {
-            if let destinationVC = segue.destination as? MapVC {
+            if let destinationVC = segue.destination as? MapViewVC {
                 destinationVC.location = locationManager.location
             }
         }
