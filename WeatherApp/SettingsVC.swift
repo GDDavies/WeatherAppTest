@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     @IBOutlet weak var daysToForecastTextField: UITextField!
     @IBOutlet weak var voiceLocaleTextField: UITextField!
@@ -24,11 +24,14 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBAction func saveSettingsButton(_ sender: UIButton) {
         let newSettings = getTextFieldText()
+        
+        if daysToForecastIsValid(settingsArray: newSettings) {
         userArray[selectedUserIndex.row]["daysToForecast"] = Int(newSettings[0])
         userArray[selectedUserIndex.row]["locale"] = newSettings[1]
         
         self.defaults.set(self.userArray, forKey: "Users")
         self.defaults.synchronize()
+        }
     }
     
     override func viewDidLoad() {
@@ -37,6 +40,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         populateUsers()
         usersTableView.selectRow(at: selectedUserIndex, animated: false, scrollPosition: .top)
         userArray[selectedUserIndex.row]["isSelected"] = true
+        daysToForecastTextField.tag = 0
     }
 
     override func didReceiveMemoryWarning() {
@@ -89,34 +93,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
     
     func addUser(sender: UIBarButtonItem) {
-        let alert = UIAlertController(title: "Add User", message: "Enter the new user's name below", preferredStyle: .alert)
-        
-        alert.addTextField { (textField) in
-            textField.placeholder = "e.g. Matt"
-        }
-        
-        alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [weak alert] (_) in
-            let textFieldText = alert?.textFields![0].text
-            
-            let userDict = ["Username": textFieldText!,
-                            "daysToForecast": 10,
-                            "locale": "en-GB",
-                            "isSelected": true
-                            ] as [String : Any]
-            self.userArray.append(userDict)
-            self.defaults.set(self.userArray, forKey: "Users")
-            self.defaults.synchronize()
-            self.usersTableView.reloadData()
-            self.usersTableView.selectRow(at: self.selectedUserIndex, animated: false, scrollPosition: .top)
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
-            self.dismiss(animated: true, completion: {
-                print("Cancel")
-            })
-        }))
-        
-        self.present(alert, animated: true, completion: nil)
+        displayPopUp(title: "Add User", message: "Enter the new user's name below", placeHolder: "e.g. Matt", type: "Save")
     }
     
     func userAlreadyExist(userKey: String) -> Bool {
@@ -137,6 +114,15 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         }
         
         return textFieldArray
+    }
+    
+    func daysToForecastIsValid(settingsArray: Array<String>) -> Bool {
+        let days = Int(settingsArray[0])
+        if days! > 16 {
+            displayPopUp(title: "Invalid days to forecast", message: "Please enter a number up to and including 16", placeHolder: "", type: "Standard")
+            return false
+        }
+        return true
     }
 
     
@@ -172,6 +158,59 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         userArray[indexPath.row]["isSelected"] = false
         self.defaults.set(self.userArray, forKey: "Users")
         self.defaults.synchronize()
+    }
+    
+    // MARK: - Textfield Methods
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField.tag == 0 {
+            
+            guard let text = textField.text else { return true }
+            let newLength = text.characters.count + string.characters.count - range.length
+            
+            let allowedCharacters = CharacterSet.decimalDigits
+            let characterSet = CharacterSet(charactersIn: string)
+            return allowedCharacters.isSuperset(of: characterSet) && newLength <= 2
+        }
+        return false
+    }
+    
+    func displayPopUp(title: String, message: String, placeHolder: String, type: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        if type == "Save" {
+            alert.addTextField { (textField) in
+                textField.placeholder = placeHolder
+            }
+            alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [weak alert] (_) in
+                let textFieldText = alert?.textFields![0].text
+                
+                let userDict = ["Username": textFieldText!,
+                                "daysToForecast": 10,
+                                "locale": "en-GB",
+                                "isSelected": true
+                    ] as [String : Any]
+                self.userArray.append(userDict)
+                self.defaults.set(self.userArray, forKey: "Users")
+                self.defaults.synchronize()
+                self.usersTableView.reloadData()
+                self.usersTableView.selectRow(at: self.selectedUserIndex, animated: false, scrollPosition: .top)
+            }))
+        
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+                self.dismiss(animated: true, completion: {
+                    print("Cancel")
+                })
+            }))
+        } else {
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
+                self.dismiss(animated: true, completion: {
+                print("OK")
+                })
+            }))
+        }
+        
+        self.present(alert, animated: true, completion: nil)
     }
 
     /*
