@@ -17,6 +17,8 @@
 		93CBC71A1F5045B900B4FE54 /* WeatherCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93CBC7191F5045B900B4FE54 /* WeatherCollectionVC.swift */; };
 		93CBC71C1F5045E600B4FE54 /* WeatherDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93CBC71B1F5045E600B4FE54 /* WeatherDataManager.swift */; };
 		93CBC71F1F50484000B4FE54 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93CBC71E1F50484000B4FE54 /* CoreLocation.framework */; };
+		93D374CC1F51C7C90087068F /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D374CB1F51C7C90087068F /* SettingsVC.swift */; };
+		93D374CE1F51CF5B0087068F /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D374CD1F51CF5B0087068F /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		93CBC7191F5045B900B4FE54 /* WeatherCollectionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherCollectionVC.swift; sourceTree = "<group>"; };
 		93CBC71B1F5045E600B4FE54 /* WeatherDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherDataManager.swift; sourceTree = "<group>"; };
 		93CBC71E1F50484000B4FE54 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		93D374CB1F51C7C90087068F /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
+		93D374CD1F51CF5B0087068F /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,9 +73,11 @@
 				93CBC7051F50449A00B4FE54 /* AppDelegate.swift */,
 				93CBC7191F5045B900B4FE54 /* WeatherCollectionVC.swift */,
 				93B4C6B51F50B2A50088A2A0 /* MapViewVC.swift */,
+				93D374CB1F51C7C90087068F /* SettingsVC.swift */,
 				93B4C6B31F50724C0088A2A0 /* WeatherCollectionViewCell.swift */,
 				93CBC71B1F5045E600B4FE54 /* WeatherDataManager.swift */,
 				937DFF501F50649500C04FAD /* DayWeather.swift */,
+				93D374CD1F51CF5B0087068F /* User.swift */,
 				93CBC7091F50449A00B4FE54 /* Main.storyboard */,
 				93CBC70C1F50449A00B4FE54 /* Assets.xcassets */,
 				93CBC70E1F50449A00B4FE54 /* LaunchScreen.storyboard */,
@@ -165,8 +171,10 @@
 				93B4C6B61F50B2A50088A2A0 /* MapViewVC.swift in Sources */,
 				93CBC71C1F5045E600B4FE54 /* WeatherDataManager.swift in Sources */,
 				937DFF511F50649500C04FAD /* DayWeather.swift in Sources */,
+				93D374CE1F51CF5B0087068F /* User.swift in Sources */,
 				93CBC7061F50449A00B4FE54 /* AppDelegate.swift in Sources */,
 				93CBC71A1F5045B900B4FE54 /* WeatherCollectionVC.swift in Sources */,
+				93D374CC1F51C7C90087068F /* SettingsVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

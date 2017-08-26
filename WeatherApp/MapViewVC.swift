@@ -1,5 +1,5 @@
 //
-//  MapVC.swift
+//  MapViewVC.swift
 //  WeatherApp
 //
 //  Created by George Davies on 25/08/2017.
