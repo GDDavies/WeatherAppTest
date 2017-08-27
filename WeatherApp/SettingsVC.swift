@@ -123,6 +123,17 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     
     // MARK: - Tableview methods
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "Users"
+        }
+        return ""
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 35
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }

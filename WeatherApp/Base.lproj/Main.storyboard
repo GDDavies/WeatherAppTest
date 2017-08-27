@@ -158,14 +158,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="kn6-hA-g3k">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="267"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="233.5"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SettingsCell" id="Kwy-6M-1Pz">
-                                        <rect key="frame" x="0.0" y="56" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Kwy-6M-1Pz" id="cl1-Rm-O31">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -176,19 +176,19 @@
                                 </connections>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Voice locale" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X6c-1y-Ndb">
-                                <rect key="frame" x="16" y="337" width="92" height="21"/>
+                                <rect key="frame" x="16" y="303.5" width="92" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No. days forecast" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gtd-eE-qgi">
-                                <rect key="frame" x="16" y="288" width="134" height="21"/>
+                                <rect key="frame" x="16" y="254.5" width="134" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Jjp-se-vv8">
-                                <rect key="frame" x="158" y="283" width="201" height="30"/>
+                                <rect key="frame" x="158" y="249.5" width="201" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
@@ -197,7 +197,7 @@
                                 </connections>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0AM-db-FDz">
-                                <rect key="frame" x="158" y="332" width="201" height="30"/>
+                                <rect key="frame" x="158" y="298.5" width="201" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -228,7 +228,7 @@
                             <constraint firstItem="Jjp-se-vv8" firstAttribute="centerY" secondItem="gtd-eE-qgi" secondAttribute="centerY" id="IVW-1r-23k"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Jjp-se-vv8" secondAttribute="trailing" id="KVX-ZB-GVe"/>
                             <constraint firstItem="lD6-oI-jMi" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.07" id="MLO-eT-MZK"/>
-                            <constraint firstItem="kn6-hA-g3k" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.4" id="NLa-VH-Df0"/>
+                            <constraint firstItem="kn6-hA-g3k" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.35" id="NLa-VH-Df0"/>
                             <constraint firstAttribute="leadingMargin" secondItem="X6c-1y-Ndb" secondAttribute="leading" id="QHU-ut-8eT"/>
                             <constraint firstItem="lD6-oI-jMi" firstAttribute="width" secondItem="9wO-Wx-gmZ" secondAttribute="width" id="Wwm-JI-9Zm"/>
                             <constraint firstItem="X6c-1y-Ndb" firstAttribute="top" secondItem="gtd-eE-qgi" secondAttribute="bottom" constant="28" id="YXD-Ma-Xpy"/>
@@ -301,7 +301,7 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="M3T-Ym-Xs2">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="lIf-5J-bxB">
+                        <barButtonItem key="leftBarButtonItem" title="&lt; Back" id="lIf-5J-bxB">
                             <connections>
                                 <segue destination="4YX-TE-buK" kind="unwind" unwindAction="unwind:" id="NkQ-1c-cSf"/>
                             </connections>
