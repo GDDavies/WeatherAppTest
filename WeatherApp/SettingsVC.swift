@@ -8,39 +8,48 @@
 
 import UIKit
 
-class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
     
     @IBOutlet weak var daysToForecastTextField: UITextField!
     @IBOutlet weak var voiceLocaleTextField: UITextField!
     @IBOutlet weak var usersTableView: UITableView!
+    @IBOutlet weak var saveButtonBottomLayoutConstraint: NSLayoutConstraint!
     
     var userArray = [Dictionary<String, Any>]()
     let defaults = UserDefaults.standard
     var selectedUserIndex = IndexPath(row: 0, section: 0)
+    
+    var localeOptions = ["en-GB", "en-AU", "en-IE", "en-US", "en-ZA"]
     
     @IBAction func addUserButton(_ sender: UIBarButtonItem) {
         addUser(sender: sender)
     }
     
     @IBAction func saveSettingsButton(_ sender: UIButton) {
-        let newSettings = getTextFieldText()
-        
-        if daysToForecastIsValid(settingsArray: newSettings) {
-        userArray[selectedUserIndex.row]["daysToForecast"] = Int(newSettings[0])
-        userArray[selectedUserIndex.row]["locale"] = newSettings[1]
+        if daysToForecastTextField.text != "" {
+            userArray[selectedUserIndex.row]["daysToForecast"] = Int(daysToForecastTextField.text!)
+        }
+        userArray[selectedUserIndex.row]["locale"] = voiceLocaleTextField.text
         
         self.defaults.set(self.userArray, forKey: "Users")
         self.defaults.synchronize()
-        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardNotification(notification:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+
         self.usersTableView.allowsMultipleSelection = false
         populateUsers()
         usersTableView.selectRow(at: selectedUserIndex, animated: false, scrollPosition: .top)
         userArray[selectedUserIndex.row]["isSelected"] = true
         daysToForecastTextField.tag = 0
+        
+        populateTextFields()
+        
+        let pickerView = UIPickerView()
+        pickerView.delegate = self
+        voiceLocaleTextField.inputView = pickerView
     }
 
     override func didReceiveMemoryWarning() {
@@ -49,7 +58,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     }
     
     func addDefaultUser() {
-        let userDict = ["Username": "Default User",
+        let userDict = ["username": "Default User",
                         "daysToForecast": 10,
                         "locale": "en-GB",
                         "isSelected": true
@@ -60,26 +69,21 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         self.usersTableView.reloadData()
     }
     
-    func getSelectedUser() {
-        
-    }
-    
     func populateUsers() {
         var numOfSelectedUsers = 0
-
         for element in UserDefaults.standard.dictionaryRepresentation() {
-                if element.key == "Users" {
-                    var i = 0
-                    for user in element.value as! Array<[String:Any]> {
-                        userArray.append(user)
-                        if user["isSelected"] as? Bool == true {
-                            numOfSelectedUsers = 1
-                            selectedUserIndex = IndexPath(row: i, section: 0)
-                        }
-                    i = i + 1
+            if element.key == "Users" {
+                var i = 0
+                for user in element.value as! Array<[String:Any]> {
+                    userArray.append(user)
+                    if user["isSelected"] as? Bool == true {
+                        numOfSelectedUsers = 1
+                        selectedUserIndex = IndexPath(row: i, section: 0)
                     }
+                    i += 1
                 }
             }
+        }
         if userArray.count == 0 {
             addDefaultUser()
         }
@@ -92,28 +96,19 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         usersTableView.reloadData()
     }
     
+    func populateTextFields() {
+        let days = userArray[selectedUserIndex.row]["daysToForecast"] as? Int
+        let savedLocale = userArray[selectedUserIndex.row]["locale"] as? String
+        daysToForecastTextField.text = String(describing: days!)
+        voiceLocaleTextField.text = savedLocale!
+    }
+    
     func addUser(sender: UIBarButtonItem) {
         displayPopUp(title: "Add User", message: "Enter the new user's name below", placeHolder: "e.g. Matt", type: "Save")
     }
     
     func userAlreadyExist(userKey: String) -> Bool {
         return UserDefaults.standard.object(forKey: userKey) != nil
-    }
-    
-    func getTextFieldText() -> Array<String> {
-        
-        // Populate array with existing saved/default values
-        var textFieldArray = ["10","en-GB"]
-        
-        if daysToForecastTextField.text != "" {
-            textFieldArray[0] = daysToForecastTextField.text!
-        }
-        
-        if voiceLocaleTextField.text != "" {
-            textFieldArray[1] = voiceLocaleTextField.text!
-        }
-        
-        return textFieldArray
     }
     
     func daysToForecastIsValid(settingsArray: Array<String>) -> Bool {
@@ -138,7 +133,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
-        cell.textLabel?.text = String(describing: userArray[indexPath.row]["Username"]!)
+        cell.textLabel?.text = String(describing: userArray[indexPath.row]["username"]!)
         cell.accessoryType = cell.isSelected ? .checkmark : .none
         return cell
     }
@@ -150,6 +145,8 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         userArray[indexPath.row]["isSelected"] = true
         self.defaults.set(self.userArray, forKey: "Users")
         self.defaults.synchronize()
+
+        populateTextFields()
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -185,7 +182,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
             alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [weak alert] (_) in
                 let textFieldText = alert?.textFields![0].text
                 
-                let userDict = ["Username": textFieldText!,
+                let userDict = ["username": textFieldText!,
                                 "daysToForecast": 10,
                                 "locale": "en-GB",
                                 "isSelected": true
@@ -212,6 +209,24 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         
         self.present(alert, animated: true, completion: nil)
     }
+    
+    // MARK: - Picker methods
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return localeOptions.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return localeOptions[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        voiceLocaleTextField.text = localeOptions[row]
+    }
 
     /*
     // MARK: - Navigation
@@ -222,4 +237,24 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         // Pass the selected object to the new view controller.
     }
     */
+    
+    func keyboardNotification(notification: NSNotification) {
+        if let userInfo = notification.userInfo {
+            let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
+            let duration:TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+            let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
+            let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIViewAnimationOptions.curveEaseInOut.rawValue
+            let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
+            if (endFrame?.origin.y)! >= UIScreen.main.bounds.size.height {
+                self.saveButtonBottomLayoutConstraint?.constant = 0.0
+            } else {
+                self.saveButtonBottomLayoutConstraint?.constant = endFrame?.size.height ?? 0.0
+            }
+            UIView.animate(withDuration: duration,
+                           delay: TimeInterval(0),
+                           options: animationCurve,
+                           animations: { self.view.layoutIfNeeded() },
+                           completion: nil)
+        }
+    }
 }

@@ -157,12 +157,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="kn6-hA-g3k">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="334"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="kn6-hA-g3k">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="267"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SettingsCell" id="Kwy-6M-1Pz">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="56" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Kwy-6M-1Pz" id="cl1-Rm-O31">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -176,19 +176,19 @@
                                 </connections>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Voice locale" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X6c-1y-Ndb">
-                                <rect key="frame" x="16" y="404" width="92" height="21"/>
+                                <rect key="frame" x="16" y="337" width="92" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No. days forecast" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gtd-eE-qgi">
-                                <rect key="frame" x="16" y="355" width="134" height="21"/>
+                                <rect key="frame" x="16" y="288" width="134" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Jjp-se-vv8">
-                                <rect key="frame" x="158" y="350" width="201" height="30"/>
+                                <rect key="frame" x="158" y="283" width="201" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
@@ -197,13 +197,13 @@
                                 </connections>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0AM-db-FDz">
-                                <rect key="frame" x="158" y="399" width="201" height="30"/>
+                                <rect key="frame" x="158" y="332" width="201" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lD6-oI-jMi">
-                                <rect key="frame" x="16" y="580" width="343" height="67"/>
+                                <rect key="frame" x="0.0" y="620" width="375" height="47"/>
                                 <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
                                 <state key="normal" title="Save Settings">
@@ -213,16 +213,24 @@
                                     <action selector="saveSettingsButton:" destination="xZk-Fa-og9" eventType="touchUpInside" id="OUP-tU-P2l"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zA6-R3-wud">
+                                <rect key="frame" x="16" y="459" width="42" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="lD6-oI-jMi" firstAttribute="centerX" secondItem="9wO-Wx-gmZ" secondAttribute="centerX" id="29p-uA-T5F"/>
                             <constraint firstItem="0AM-db-FDz" firstAttribute="centerY" secondItem="X6c-1y-Ndb" secondAttribute="centerY" id="4Ub-Yf-1LT"/>
                             <constraint firstItem="Jjp-se-vv8" firstAttribute="centerY" secondItem="gtd-eE-qgi" secondAttribute="centerY" id="IVW-1r-23k"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Jjp-se-vv8" secondAttribute="trailing" id="KVX-ZB-GVe"/>
-                            <constraint firstItem="lD6-oI-jMi" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.1" id="MLO-eT-MZK"/>
-                            <constraint firstItem="kn6-hA-g3k" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.5" id="NLa-VH-Df0"/>
+                            <constraint firstItem="lD6-oI-jMi" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.07" id="MLO-eT-MZK"/>
+                            <constraint firstItem="kn6-hA-g3k" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.4" id="NLa-VH-Df0"/>
                             <constraint firstAttribute="leadingMargin" secondItem="X6c-1y-Ndb" secondAttribute="leading" id="QHU-ut-8eT"/>
-                            <constraint firstItem="lD6-oI-jMi" firstAttribute="trailing" secondItem="9wO-Wx-gmZ" secondAttribute="trailingMargin" id="Vab-J7-n4F"/>
+                            <constraint firstItem="lD6-oI-jMi" firstAttribute="width" secondItem="9wO-Wx-gmZ" secondAttribute="width" id="Wwm-JI-9Zm"/>
                             <constraint firstItem="X6c-1y-Ndb" firstAttribute="top" secondItem="gtd-eE-qgi" secondAttribute="bottom" constant="28" id="YXD-Ma-Xpy"/>
                             <constraint firstItem="Jjp-se-vv8" firstAttribute="leading" secondItem="gtd-eE-qgi" secondAttribute="trailing" constant="8" id="fFX-aP-FFh"/>
                             <constraint firstAttribute="leadingMargin" secondItem="gtd-eE-qgi" secondAttribute="leading" id="fnn-RL-BVQ"/>
@@ -230,8 +238,7 @@
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="leading" secondItem="9wO-Wx-gmZ" secondAttribute="leading" id="lBU-gs-YkQ"/>
                             <constraint firstItem="gtd-eE-qgi" firstAttribute="top" secondItem="kn6-hA-g3k" secondAttribute="bottom" constant="21" id="m65-5k-Qar"/>
                             <constraint firstAttribute="trailingMargin" secondItem="0AM-db-FDz" secondAttribute="trailing" id="oYX-0o-mOr"/>
-                            <constraint firstItem="N62-px-POA" firstAttribute="top" secondItem="lD6-oI-jMi" secondAttribute="bottom" constant="20" id="pW4-lH-Co6"/>
-                            <constraint firstItem="lD6-oI-jMi" firstAttribute="leading" secondItem="9wO-Wx-gmZ" secondAttribute="leadingMargin" id="wA1-NO-Yi3"/>
+                            <constraint firstItem="N62-px-POA" firstAttribute="top" secondItem="lD6-oI-jMi" secondAttribute="bottom" id="pW4-lH-Co6"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="top" secondItem="9wO-Wx-gmZ" secondAttribute="topMargin" id="xKE-7L-sxK"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="width" secondItem="9wO-Wx-gmZ" secondAttribute="width" id="xTi-DR-DeF"/>
                         </constraints>
@@ -245,6 +252,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="daysToForecastTextField" destination="Jjp-se-vv8" id="HWc-XE-P16"/>
+                        <outlet property="saveButtonBottomLayoutConstraint" destination="pW4-lH-Co6" id="ADz-Wy-d7U"/>
                         <outlet property="usersTableView" destination="kn6-hA-g3k" id="Ul2-R4-Pbg"/>
                         <outlet property="voiceLocaleTextField" destination="0AM-db-FDz" id="b9b-B9-P4C"/>
                     </connections>
