@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import CoreLocation
+import Speech
 
 class MapViewVC: UIViewController {
 
@@ -75,6 +76,10 @@ class MapViewVC: UIViewController {
             self.searchForLocation(text: String(describing: (textField?.text)!))
         }))
         
+        alert.addAction(UIAlertAction(title: "Siri..", style: .default, handler: { [weak alert] (_) in
+            self.speechToSearch()
+        }))
+        
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             self.dismiss(animated: true, completion: { 
                 print("Cancel")
@@ -99,6 +104,52 @@ class MapViewVC: UIViewController {
                 }
             })
         }
+    }
+    
+    func speechToSearch() {
+        
+        if #available(iOS 10.0, *) {
+            let audioEngine = AVAudioEngine()
+            let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer(locale: Locale.init(identifier: WeatherData.sharedInstance.voiceLocale))
+            let request = SFSpeechAudioBufferRecognitionRequest()
+            var recognitionTask: SFSpeechRecognitionTask?
+            
+            guard let node = audioEngine.inputNode else { return }
+            let recordingFormat = node.outputFormat(forBus: 0)
+            node.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
+                request.append(buffer)
+            }
+            
+            audioEngine.prepare()
+            do {
+                try audioEngine.start()
+            } catch {
+                return print(error)
+            }
+            
+            guard let myRecogniser = SFSpeechRecognizer() else {
+                // A recogniser is not supported for current locale
+                return
+            }
+            
+            if !myRecogniser.isAvailable {
+                // A recogniser is not available right now
+                return
+            }
+            
+            recognitionTask = speechRecognizer?.recognitionTask(with: request, resultHandler: { (result, error) in
+                if let result = result {
+                    print(result)
+                } else if let error = error {
+                    print(error)
+                }
+            })
+
+        } else {
+            // Fallback on earlier versions
+        }
+        
+        
     }
     
 }
