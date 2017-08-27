@@ -202,28 +202,34 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zA6-R3-wud">
-                                <rect key="frame" x="16" y="459" width="42" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hourly forecast" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zA6-R3-wud">
+                                <rect key="frame" x="16" y="352.5" width="117.5" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="wwN-vK-9A1">
+                                <rect key="frame" x="310" y="348" width="51" height="31"/>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="0AM-db-FDz" firstAttribute="centerY" secondItem="X6c-1y-Ndb" secondAttribute="centerY" id="4Ub-Yf-1LT"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="wwN-vK-9A1" secondAttribute="trailing" id="8Hz-p7-osi"/>
                             <constraint firstItem="Jjp-se-vv8" firstAttribute="centerY" secondItem="gtd-eE-qgi" secondAttribute="centerY" id="IVW-1r-23k"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Jjp-se-vv8" secondAttribute="trailing" id="KVX-ZB-GVe"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.35" id="NLa-VH-Df0"/>
                             <constraint firstAttribute="leadingMargin" secondItem="X6c-1y-Ndb" secondAttribute="leading" id="QHU-ut-8eT"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="zA6-R3-wud" secondAttribute="leading" id="UQp-fF-ryE"/>
                             <constraint firstItem="X6c-1y-Ndb" firstAttribute="top" secondItem="gtd-eE-qgi" secondAttribute="bottom" constant="28" id="YXD-Ma-Xpy"/>
                             <constraint firstItem="Jjp-se-vv8" firstAttribute="leading" secondItem="gtd-eE-qgi" secondAttribute="trailing" constant="8" id="fFX-aP-FFh"/>
                             <constraint firstAttribute="leadingMargin" secondItem="gtd-eE-qgi" secondAttribute="leading" id="fnn-RL-BVQ"/>
                             <constraint firstItem="0AM-db-FDz" firstAttribute="width" secondItem="Jjp-se-vv8" secondAttribute="width" id="gNy-9J-WZu"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="leading" secondItem="9wO-Wx-gmZ" secondAttribute="leading" id="lBU-gs-YkQ"/>
                             <constraint firstItem="gtd-eE-qgi" firstAttribute="top" secondItem="kn6-hA-g3k" secondAttribute="bottom" constant="21" id="m65-5k-Qar"/>
+                            <constraint firstItem="wwN-vK-9A1" firstAttribute="centerY" secondItem="zA6-R3-wud" secondAttribute="centerY" id="nSM-21-g9D"/>
                             <constraint firstAttribute="trailingMargin" secondItem="0AM-db-FDz" secondAttribute="trailing" id="oYX-0o-mOr"/>
+                            <constraint firstItem="zA6-R3-wud" firstAttribute="top" secondItem="X6c-1y-Ndb" secondAttribute="bottom" constant="28" id="vmB-FX-MwL"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="top" secondItem="9wO-Wx-gmZ" secondAttribute="topMargin" id="xKE-7L-sxK"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="width" secondItem="9wO-Wx-gmZ" secondAttribute="width" id="xTi-DR-DeF"/>
                         </constraints>
@@ -242,6 +248,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="daysToForecastTextField" destination="Jjp-se-vv8" id="HWc-XE-P16"/>
+                        <outlet property="hourlyForecastSwitch" destination="wwN-vK-9A1" id="s71-Ok-31B"/>
                         <outlet property="usersTableView" destination="kn6-hA-g3k" id="Ul2-R4-Pbg"/>
                         <outlet property="voiceLocaleTextField" destination="0AM-db-FDz" id="b9b-B9-P4C"/>
                     </connections>

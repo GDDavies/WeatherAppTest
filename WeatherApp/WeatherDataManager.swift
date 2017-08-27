@@ -10,20 +10,21 @@ import Foundation
 import CoreLocation
 
 let weatherDataNCKey = "com.georgeddavies.weatherData"
+let hourlyDataNCKey = "com.georgeddavies.hourlyData"
 
 class WeatherData: NSObject {
     
     static let sharedInstance = WeatherData()
     var weatherArray = [DayWeather]()
+    var hourlyWeather = [HourWeather]()
     var daysCount = 10
     var voiceLocale = "en-GB"
-    var city: String?
+    var city = "London, UK"
+    var hourlyForecast = false
     
     fileprivate let apiKey = "ff3516b24bf01703355151a3ba0addc9"
     
     func getWeatherData(latitude: Double, longitude: Double) {
-        
-        print("weather data got")
         
         getLocaleAndDaysToForecast()
         
@@ -93,9 +94,68 @@ class WeatherData: NSObject {
                     if user["isSelected"] as? Bool == true {
                         voiceLocale = user["locale"] as! String
                         daysCount = user["daysToForecast"] as! Int
+                        hourlyForecast = user["hourlyForecast"] as! Bool
                     }
                 }
             }
         }
+    }
+    
+    func getHourlyForecast(latitude: Double, longitude: Double) {
+        
+        print("hourly data got")
+        
+        //getLocaleAndDaysToForecast()
+        
+        let url = URL(string: "http://api.openweathermap.org/data/2.5/forecast?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)")
+        
+        let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
+            DispatchQueue.main.async(execute: {
+                if let unwrappedData = data {
+                    // If successful pass data object to json variable as dictionary
+                    do {
+                        self.convertHourlyForecast(weatherData: unwrappedData)
+                    } catch {
+                        // Error popup
+                        print("Error fetching data")
+                    }
+                } else {
+                    // Error popup
+                    print("Unable to retrieve data")
+                }
+            })
+        })
+        task.resume()
+    }
+    
+    func convertHourlyForecast(weatherData: Data) {
+        hourlyWeather.removeAll()
+        do {
+            let json = try JSONSerialization.jsonObject(with: weatherData, options: []) as! Dictionary<String, AnyObject>
+            
+            if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
+                for forecast in forecastData {
+                    let hourlyForecastData = HourWeather()
+                    hourlyForecastData.city = city
+                    
+                    let epochTime = forecast["dt"] as? Int
+                    let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))
+                    hourlyForecastData.date = date
+                    if let temperatures = forecast["main"] as? Dictionary<String, AnyObject> {
+                        hourlyForecastData.temp = (temperatures["temp_max"] as? Double)! - 273.15
+                    }
+                    if let weather = forecast["weather"] as? [Dictionary<String, AnyObject>] {
+                        hourlyForecastData.weatherId = weather[0]["id"] as? Int
+                        hourlyForecastData.weatherMain = weather[0]["main"] as? String
+                        hourlyForecastData.weatherDescription = weather[0]["description"] as? String
+                        hourlyForecastData.weatherIcon = weather[0]["icon"] as? String
+                    }
+                    hourlyWeather.append(hourlyForecastData)
+                }
+            }
+        } catch {
+            print("Error fetching data")
+        }
+        NotificationCenter.default.post(name: Notification.Name(rawValue: hourlyDataNCKey), object: self)
     }
 }

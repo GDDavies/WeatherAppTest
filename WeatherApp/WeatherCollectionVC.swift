@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import AVFoundation
 
-class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource, CLLocationManagerDelegate {
+class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource, CLLocationManagerDelegate, AVSpeechSynthesizerDelegate {
 
     @IBOutlet weak var weatherCollectionView: UICollectionView!
     @IBOutlet weak var cityNameLabel: UILabel!
@@ -42,6 +42,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         super.viewDidLoad()
         
         findLocation()
+        WeatherData.sharedInstance.getLocaleAndDaysToForecast()
         
         // Notification observer for when settings are updated
         NotificationCenter.default.addObserver(self, selector: #selector(populateData), name: NSNotification.Name(rawValue: settingsDataNCKey), object: nil)
@@ -49,12 +50,10 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         // Notification observer for when json data is successfully loaded
         NotificationCenter.default.addObserver(self, selector: #selector(shouldPopulateData), name: NSNotification.Name(rawValue: weatherDataNCKey), object: nil)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(shouldPopulateData), name: NSNotification.Name(rawValue: hourlyDataNCKey), object: nil)
+        
         shareWeatherButton.isEnabled = false
         weatherCollectionView.allowsMultipleSelection = false
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -63,26 +62,48 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     }
     
     func shouldPopulateData() {
-        
-        if WeatherData.sharedInstance.daysCount != weatherCollectionView.numberOfItems(inSection: 0) {
-            populateData()
-        }
-        if newLocation != nil {
-            if cityNameLabel.text != newCityName {
+        if !WeatherData.sharedInstance.hourlyForecast {
+            if WeatherData.sharedInstance.daysCount != weatherCollectionView.numberOfItems(inSection: 0) {
                 populateData()
+            }
+            if newLocation != nil {
+                if cityNameLabel.text != newCityName {
+                    populateData()
+                }
+            }
+        } else {
+            if WeatherData.sharedInstance.hourlyWeather.count != weatherCollectionView.numberOfItems(inSection: 0) {
+                populateData()
+            }
+            if newLocation != nil {
+                if cityNameLabel.text != newCityName {
+                    populateData()
+                }
             }
         }
     }
     
     func populateData() {
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
-        if newLocation == nil {
-            if let start = startingLocation {
-                WeatherData.sharedInstance.getWeatherData(latitude: start.coordinate.latitude, longitude: start.coordinate.longitude)
+        if !WeatherData.sharedInstance.hourlyForecast {
+            if newLocation == nil {
+                if let start = startingLocation {
+                    WeatherData.sharedInstance.getWeatherData(latitude: start.coordinate.latitude, longitude: start.coordinate.longitude)
+                }
+            } else {
+                if let new = newLocation {
+                    WeatherData.sharedInstance.getWeatherData(latitude: new.coordinate.latitude, longitude: new.coordinate.longitude)
+                }
             }
         } else {
-            if let new = newLocation {
-                WeatherData.sharedInstance.getWeatherData(latitude: new.coordinate.latitude, longitude: new.coordinate.longitude)
+            if newLocation == nil {
+                if let start = startingLocation {
+                    WeatherData.sharedInstance.getHourlyForecast(latitude: start.coordinate.latitude, longitude: start.coordinate.longitude)
+                }
+            } else {
+                if let new = newLocation {
+                    WeatherData.sharedInstance.getHourlyForecast(latitude: new.coordinate.latitude, longitude: new.coordinate.longitude)
+                }
             }
         }
         weatherCollectionView.reloadData()
@@ -120,6 +141,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         locationManager.stopUpdatingLocation()
         startingLocation = location
         WeatherData.sharedInstance.getWeatherData(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        WeatherData.sharedInstance.getHourlyForecast(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
     }
     
     func updateCollectionViewLabels() {
@@ -152,8 +174,11 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return WeatherData.sharedInstance.weatherArray.count
+        if !WeatherData.sharedInstance.hourlyForecast {
+            return WeatherData.sharedInstance.weatherArray.count
+        } else {
+            return WeatherData.sharedInstance.hourlyWeather.count
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -165,23 +190,48 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
             cell.layer.borderColor = UIColor.clear.cgColor
         }
         
-        if !WeatherData.sharedInstance.weatherArray.isEmpty {
-            if let weatherDate = WeatherData.sharedInstance.weatherArray[indexPath.row].date {
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "d MMM"
-                cell.dateLabel.text = dateFormatter.string(from: weatherDate)
+        if !WeatherData.sharedInstance.hourlyForecast {
+            
+            if !WeatherData.sharedInstance.weatherArray.isEmpty {
+                if let weatherDate = WeatherData.sharedInstance.weatherArray[indexPath.row].date {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "d MMM"
+                    cell.dateLabel.text = dateFormatter.string(from: weatherDate)
+                }
+                if let weatherIcon = WeatherData.sharedInstance.weatherArray[indexPath.row].weatherIcon {
+                    let image = UIImage(named: "\(weatherIcon).png")
+                    let templateImage = image?.withRenderingMode(.alwaysTemplate)
+                    cell.weatherTypeIcon.image = templateImage
+                    cell.weatherTypeIcon.tintColor = UIColor.white
+                }
+                if let minTemp = WeatherData.sharedInstance.weatherArray[indexPath.row].minTemp {
+                    cell.minTempLabel.text = "Min: \(String(format: "%.0f", minTemp))°C"
+                }
+                if let maxTemp = WeatherData.sharedInstance.weatherArray[indexPath.row].maxTemp {
+                    cell.maxTempLabel.text = "Max: \(String(format: "%.0f", maxTemp))°C"
+                }
             }
-            if let weatherIcon = WeatherData.sharedInstance.weatherArray[indexPath.row].weatherIcon {
-                let image = UIImage(named: "\(weatherIcon).png")
-                let templateImage = image?.withRenderingMode(.alwaysTemplate)
-                cell.weatherTypeIcon.image = templateImage
-                cell.weatherTypeIcon.tintColor = UIColor.white
-            }
-            if let minTemp = WeatherData.sharedInstance.weatherArray[indexPath.row].minTemp {
-                cell.minTempLabel.text = "Min: \(String(format: "%.0f", minTemp))°C"
-            }
-            if let maxTemp = WeatherData.sharedInstance.weatherArray[indexPath.row].maxTemp {
-                cell.maxTempLabel.text = "Max: \(String(format: "%.0f", maxTemp))°C"
+            
+        } else {
+            
+            if !WeatherData.sharedInstance.hourlyWeather.isEmpty {
+                
+                if let weatherDate = WeatherData.sharedInstance.hourlyWeather[indexPath.row].date {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "e MMM - h:mm a"
+                    cell.dateLabel.text = dateFormatter.string(from: weatherDate)
+                }
+                if let weatherIcon = WeatherData.sharedInstance.hourlyWeather[indexPath.row].weatherIcon {
+                    let image = UIImage(named: "\(weatherIcon).png")
+                    let templateImage = image?.withRenderingMode(.alwaysTemplate)
+                    cell.weatherTypeIcon.image = templateImage
+                    cell.weatherTypeIcon.tintColor = UIColor.white
+                }
+                if let maxTemp = WeatherData.sharedInstance.hourlyWeather[indexPath.row].temp {
+                    cell.maxTempLabel.text = "Max: \(String(format: "%.0f", maxTemp))°C"
+                }
+
+                
             }
         }
         return cell
@@ -213,7 +263,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         if !shareWeatherButton.isEnabled {
             shareWeatherButton.isEnabled = true
         }
-        textToSpeech(index: indexPath)
+        textToSpeech(index: indexPath, hourly: WeatherData.sharedInstance.hourlyForecast)
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -235,55 +285,35 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         }
     }
     
-    func textToSpeech(index: IndexPath) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d MMMM"
-        if let weatherDate = WeatherData.sharedInstance.weatherArray[index.row].date {
-            if let weatherDesc = WeatherData.sharedInstance.weatherArray[index.row].weatherDescription {
-                let string = "\(dateFormatter.string(from: weatherDate)) \(weatherDesc). Highs of\(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].maxTemp!)) degrees celsius and lows of \(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].minTemp!)) degrees celsius."
-                let utterance = AVSpeechUtterance(string: string)
-                utterance.voice = AVSpeechSynthesisVoice(language: WeatherData.sharedInstance.voiceLocale)
-                let synthesizer = AVSpeechSynthesizer()
-                synthesizer.speak(utterance)
-                selectedIndex = index
+    func textToSpeech(index: IndexPath, hourly: Bool) {
+        if !hourly {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "d MMMM"
+            if let weatherDate = WeatherData.sharedInstance.weatherArray[index.row].date {
+                if let weatherDesc = WeatherData.sharedInstance.weatherArray[index.row].weatherDescription {
+                    let string = "\(dateFormatter.string(from: weatherDate)) \(weatherDesc). Highs of\(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].maxTemp!)) degrees celsius and lows of \(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].minTemp!)) degrees celsius."
+                    let utterance = AVSpeechUtterance(string: string)
+                    utterance.voice = AVSpeechSynthesisVoice(language: WeatherData.sharedInstance.voiceLocale)
+                    let synthesizer = AVSpeechSynthesizer()
+                    synthesizer.speak(utterance)
+                    selectedIndex = index
+                }
+            }
+        }else {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "e MMM - h:mm a"
+            if let weatherDate = WeatherData.sharedInstance.hourlyWeather[index.row].date {
+                if let weatherDesc = WeatherData.sharedInstance.hourlyWeather[index.row].weatherDescription {
+                    let string = "\(dateFormatter.string(from: weatherDate)) \(weatherDesc). High of\(String(format: "%.0f", WeatherData.sharedInstance.hourlyWeather[index.row].temp!)) degrees celsius."
+                    let utterance = AVSpeechUtterance(string: string)
+                    utterance.voice = AVSpeechSynthesisVoice(language: WeatherData.sharedInstance.voiceLocale)
+                    let synthesizer = AVSpeechSynthesizer()
+                    synthesizer.speak(utterance)
+                    selectedIndex = index
+                }
             }
         }
     }
-    
-    
-//    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
-//        <#code#>
-//    }
-    
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-    
-    }
-    */
-
 }
 
 extension Double {

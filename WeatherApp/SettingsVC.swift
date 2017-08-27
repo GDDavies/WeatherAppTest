@@ -15,6 +15,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     @IBOutlet weak var daysToForecastTextField: UITextField!
     @IBOutlet weak var voiceLocaleTextField: UITextField!
     @IBOutlet weak var usersTableView: UITableView!
+    @IBOutlet weak var hourlyForecastSwitch: UISwitch!
     
     var userArray = [Dictionary<String, Any>]()
     let defaults = UserDefaults.standard
@@ -31,6 +32,12 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
             userArray[selectedUserIndex.row]["daysToForecast"] = Int(daysToForecastTextField.text!)
         }
         userArray[selectedUserIndex.row]["locale"] = voiceLocaleTextField.text
+        
+        if hourlyForecastSwitch.isOn {
+            userArray[selectedUserIndex.row]["hourlyForecast"] = true
+        } else {
+            userArray[selectedUserIndex.row]["hourlyForecast"] = false
+        }
         
         self.defaults.set(self.userArray, forKey: "Users")
         self.defaults.synchronize()
@@ -63,7 +70,8 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         let userDict = ["username": "Default User",
                         "daysToForecast": 10,
                         "locale": "en-GB",
-                        "isSelected": true
+                        "isSelected": true,
+                        "hourlyForecast": false
             ] as [String : Any]
         self.userArray.append(userDict)
         self.defaults.set(self.userArray, forKey: "Users")
@@ -101,8 +109,11 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     func populateTextFields() {
         let days = userArray[selectedUserIndex.row]["daysToForecast"] as? Int
         let savedLocale = userArray[selectedUserIndex.row]["locale"] as? String
+        let hourly = userArray[selectedUserIndex.row]["hourlyForecast"] as? Bool
+
         daysToForecastTextField.text = String(describing: days!)
         voiceLocaleTextField.text = savedLocale!
+        hourlyForecastSwitch.isOn = hourly!
     }
     
     func addUser(sender: UIBarButtonItem) {
@@ -146,7 +157,9 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
-        cell.textLabel?.text = String(describing: userArray[indexPath.row]["username"]!)
+        if let username = userArray[indexPath.row]["username"] {
+            cell.textLabel?.text = String(describing: username)
+        }
         cell.accessoryType = cell.isSelected ? .checkmark : .none
         return cell
     }
@@ -198,7 +211,8 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
                 let userDict = ["username": textFieldText!,
                                 "daysToForecast": 10,
                                 "locale": "en-GB",
-                                "isSelected": true
+                                "isSelected": true,
+                                "hourlyForecast": false
                     ] as [String : Any]
                 self.userArray.append(userDict)
                 self.defaults.set(self.userArray, forKey: "Users")
