@@ -40,7 +40,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         findLocation()
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
         

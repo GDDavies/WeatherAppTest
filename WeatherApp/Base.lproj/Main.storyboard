@@ -162,10 +162,10 @@
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SettingsCell" id="Kwy-6M-1Pz">
-                                        <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="55" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Kwy-6M-1Pz" id="cl1-Rm-O31">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -283,15 +283,29 @@
                                     <action selector="mapTypeSegmentedControl:" destination="iWA-No-fKC" eventType="valueChanged" id="ZqS-AN-XtE"/>
                                 </connections>
                             </segmentedControl>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DMw-tR-MIl">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="hh8-Pe-lCf"/>
+                                    <barButtonItem title="Siri" id="P4a-Cl-3Hm">
+                                        <connections>
+                                            <action selector="activateSiriButton:" destination="iWA-No-fKC" id="c8f-k7-LNy"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="mgO-hW-IXp" secondAttribute="trailing" id="0Mu-6F-yCo"/>
+                            <constraint firstItem="DMw-tR-MIl" firstAttribute="leading" secondItem="9di-aV-hV6" secondAttribute="leading" id="0fB-x0-u40"/>
                             <constraint firstItem="mgO-hW-IXp" firstAttribute="leading" secondItem="9di-aV-hV6" secondAttribute="leading" id="5Ik-25-rPr"/>
                             <constraint firstItem="cW7-oL-7Cn" firstAttribute="top" secondItem="gxS-Ym-WGj" secondAttribute="bottom" constant="8" id="P5m-5y-BjZ"/>
+                            <constraint firstAttribute="trailing" secondItem="DMw-tR-MIl" secondAttribute="trailing" id="Pgi-kW-0FZ"/>
+                            <constraint firstItem="DMw-tR-MIl" firstAttribute="top" secondItem="mgO-hW-IXp" secondAttribute="bottom" id="QBV-p6-xE1"/>
+                            <constraint firstAttribute="bottom" secondItem="DMw-tR-MIl" secondAttribute="bottom" id="Wh0-Wl-mWn"/>
                             <constraint firstItem="cW7-oL-7Cn" firstAttribute="centerX" secondItem="9di-aV-hV6" secondAttribute="centerX" id="hjm-JQ-BtC"/>
                             <constraint firstItem="mgO-hW-IXp" firstAttribute="top" secondItem="cW7-oL-7Cn" secondAttribute="bottom" constant="8" id="ksg-Gu-Cq5"/>
-                            <constraint firstItem="JcA-0j-S9M" firstAttribute="top" secondItem="mgO-hW-IXp" secondAttribute="bottom" id="sU9-lK-iX2"/>
                             <constraint firstItem="cW7-oL-7Cn" firstAttribute="width" secondItem="9di-aV-hV6" secondAttribute="width" multiplier="0.8" id="zri-6a-Zoq"/>
                         </constraints>
                     </view>
@@ -306,6 +320,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="mapView" destination="mgO-hW-IXp" id="Dfp-x8-b8P"/>
+                        <outlet property="siriButton" destination="P4a-Cl-3Hm" id="h0I-6R-CJA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GSg-qb-BKE" userLabel="First Responder" sceneMemberID="firstResponder"/>

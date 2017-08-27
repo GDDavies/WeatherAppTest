@@ -11,13 +11,42 @@ import MapKit
 import CoreLocation
 import Speech
 
-class MapViewVC: UIViewController {
+
+class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     var location: CLLocation?
     var newLocation: CLLocation?
     var newCityName: String?
     var resultSearchController: UISearchController?
+    
+    let audioEngine = AVAudioEngine()
+    
+    // MARK: - Version check
+    // Only enable Siri search in iOS 10+
+    var speechRecogniser: Any? = {
+        if #available(iOS 10.0, *) {
+            return SFSpeechRecognizer()
+        } else {
+            return false
+        }
+    }()
+    
+    var request: Any? = {
+        if #available(iOS 10.0, *) {
+            return SFSpeechAudioBufferRecognitionRequest()
+        } else {
+            return false
+        }
+    }()
+    
+    var recognitionTask: Any? = {
+        if #available(iOS 10.0, *) {
+            return SFSpeechRecognitionTask()
+        } else {
+            return false
+        }
+    }()
     
     @IBAction func mapTypeSegmentedControl(_ sender: UISegmentedControl) {
         switch (sender.selectedSegmentIndex) {
@@ -28,6 +57,12 @@ class MapViewVC: UIViewController {
         default:
             mapView.mapType = .hybrid
         }
+    }
+    
+    @IBOutlet weak var siriButton: UIBarButtonItem!
+    
+    @IBAction func activateSiriButton(_ sender: UIBarButtonItem) {
+        speechToSearch()
     }
     
     override func viewDidLoad() {
@@ -42,6 +77,13 @@ class MapViewVC: UIViewController {
         if let startLocation = location {
             goToLocationOnMap(location: startLocation)
         }
+        
+        if #available(iOS 10.0, *) {
+            siriButton.isEnabled = true
+        } else {
+            siriButton.isEnabled = false
+        }
+
         
         self.navigationItem.setRightBarButton(searchLocationButton, animated: true)
         self.navigationController?.title = ""
@@ -76,10 +118,6 @@ class MapViewVC: UIViewController {
             self.searchForLocation(text: String(describing: (textField?.text)!))
         }))
         
-        alert.addAction(UIAlertAction(title: "Siri..", style: .default, handler: { [weak alert] (_) in
-            self.speechToSearch()
-        }))
-        
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             self.dismiss(animated: true, completion: { 
                 print("Cancel")
@@ -109,15 +147,12 @@ class MapViewVC: UIViewController {
     func speechToSearch() {
         
         if #available(iOS 10.0, *) {
-            let audioEngine = AVAudioEngine()
-            let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer(locale: Locale.init(identifier: WeatherData.sharedInstance.voiceLocale))
-            let request = SFSpeechAudioBufferRecognitionRequest()
-            var recognitionTask: SFSpeechRecognitionTask?
             
             guard let node = audioEngine.inputNode else { return }
             let recordingFormat = node.outputFormat(forBus: 0)
             node.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
-                request.append(buffer)
+                let req = self.request as! SFSpeechAudioBufferRecognitionRequest
+                req.append(buffer)
             }
             
             audioEngine.prepare()
@@ -137,9 +172,11 @@ class MapViewVC: UIViewController {
                 return
             }
             
-            recognitionTask = speechRecognizer?.recognitionTask(with: request, resultHandler: { (result, error) in
+            
+            recognitionTask = (speechRecogniser as! SFSpeechRecognizer).recognitionTask(with: request as! SFSpeechRecognitionRequest, resultHandler: { result, error in
                 if let result = result {
-                    print(result)
+                    let transcribedString = result.bestTranscription.formattedString
+                    print(transcribedString)
                 } else if let error = error {
                     print(error)
                 }

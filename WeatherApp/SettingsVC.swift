@@ -223,13 +223,11 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
                 self.dismiss(animated: true, completion: {
-                    print("Cancel")
                 })
             }))
         } else {
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
                 self.dismiss(animated: true, completion: {
-                print("OK")
                 })
             }))
         }
