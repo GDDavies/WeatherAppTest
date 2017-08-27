@@ -64,7 +64,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     
     func shouldPopulateData() {
         
-        if WeatherData.sharedInstance.daysCount! != weatherCollectionView.numberOfItems(inSection: 0) {
+        if WeatherData.sharedInstance.daysCount != weatherCollectionView.numberOfItems(inSection: 0) {
             populateData()
         }
         if newLocation != nil {
@@ -242,7 +242,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
             if let weatherDesc = WeatherData.sharedInstance.weatherArray[index.row].weatherDescription {
                 let string = "\(dateFormatter.string(from: weatherDate)) \(weatherDesc). Highs of\(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].maxTemp!)) degrees celsius and lows of \(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].minTemp!)) degrees celsius."
                 let utterance = AVSpeechUtterance(string: string)
-                utterance.voice = AVSpeechSynthesisVoice(language: WeatherData.sharedInstance.voiceLocale!)
+                utterance.voice = AVSpeechSynthesisVoice(language: WeatherData.sharedInstance.voiceLocale)
                 let synthesizer = AVSpeechSynthesizer()
                 synthesizer.speak(utterance)
                 selectedIndex = index

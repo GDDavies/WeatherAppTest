@@ -15,8 +15,8 @@ class WeatherData: NSObject {
     
     static let sharedInstance = WeatherData()
     var weatherArray = [DayWeather]()
-    var daysCount: Int?
-    var voiceLocale: String?
+    var daysCount = 10
+    var voiceLocale = "en-GB"
     var city: String?
     
     fileprivate let apiKey = "ff3516b24bf01703355151a3ba0addc9"
@@ -27,7 +27,7 @@ class WeatherData: NSObject {
         
         getLocaleAndDaysToForecast()
         
-        let url = URL(string: "http://api.openweathermap.org/data/2.5/forecast/daily?lat=\(latitude)&lon=\(longitude)&cnt=\(String(describing: daysCount!))&appid=\(apiKey)")
+        let url = URL(string: "http://api.openweathermap.org/data/2.5/forecast/daily?lat=\(latitude)&lon=\(longitude)&cnt=\(String(describing: daysCount))&appid=\(apiKey)")
         
         let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
             DispatchQueue.main.async(execute: {
@@ -91,8 +91,8 @@ class WeatherData: NSObject {
             if element.key == "Users" {
                 for user in element.value as! Array<[String:Any]> {
                     if user["isSelected"] as? Bool == true {
-                        voiceLocale = user["locale"] as? String
-                        daysCount = user["daysToForecast"] as? Int
+                        voiceLocale = user["locale"] as! String
+                        daysCount = user["daysToForecast"] as! Int
                     }
                 }
             }
