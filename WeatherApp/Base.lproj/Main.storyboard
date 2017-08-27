@@ -25,7 +25,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="MjT-jG-9io">
-                                <rect key="frame" x="0.0" y="140" width="375" height="483"/>
+                                <rect key="frame" x="0.0" y="137" width="375" height="486"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="n4t-oW-vep">
                                     <size key="itemSize" width="123" height="123"/>
@@ -93,8 +93,8 @@
                                 </connections>
                             </collectionView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="meD-U4-L20">
-                                <rect key="frame" x="131" y="72" width="113" height="60"/>
-                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Regular" family="Apple SD Gothic Neo" pointSize="50"/>
+                                <rect key="frame" x="16" y="72" width="121.5" height="65"/>
+                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Regular" family="Apple SD Gothic Neo" pointSize="54"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -112,12 +112,12 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="meD-U4-L20" firstAttribute="centerX" secondItem="8QY-zr-Qqp" secondAttribute="centerX" id="1Gi-2g-6ke"/>
-                            <constraint firstItem="MjT-jG-9io" firstAttribute="top" secondItem="meD-U4-L20" secondAttribute="bottom" constant="8" id="3cA-Ng-Ic7"/>
                             <constraint firstItem="meD-U4-L20" firstAttribute="top" secondItem="ljp-5B-A4Y" secondAttribute="bottom" constant="8" id="6ed-7a-lG1"/>
                             <constraint firstItem="MjT-jG-9io" firstAttribute="leading" secondItem="8QY-zr-Qqp" secondAttribute="leading" id="8AE-t5-0cj"/>
+                            <constraint firstItem="MjT-jG-9io" firstAttribute="top" secondItem="meD-U4-L20" secondAttribute="bottom" id="AI4-bF-8pl"/>
                             <constraint firstItem="8lS-Io-PDG" firstAttribute="top" secondItem="vdL-fu-CbJ" secondAttribute="bottom" id="Ds2-Lb-qPu"/>
                             <constraint firstItem="vdL-fu-CbJ" firstAttribute="leading" secondItem="8QY-zr-Qqp" secondAttribute="leading" id="F35-hi-Hhw"/>
+                            <constraint firstItem="meD-U4-L20" firstAttribute="leading" secondItem="8QY-zr-Qqp" secondAttribute="leadingMargin" id="HxL-fv-NeI"/>
                             <constraint firstAttribute="trailing" secondItem="vdL-fu-CbJ" secondAttribute="trailing" id="VZv-Yz-pza"/>
                             <constraint firstAttribute="trailing" secondItem="MjT-jG-9io" secondAttribute="trailing" id="Vjx-xZ-z2c"/>
                             <constraint firstItem="vdL-fu-CbJ" firstAttribute="top" secondItem="MjT-jG-9io" secondAttribute="bottom" id="dt7-xX-F3V"/>

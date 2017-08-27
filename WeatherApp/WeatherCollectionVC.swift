@@ -53,6 +53,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         
         shareWeatherButton.isEnabled = false
         weatherCollectionView.allowsMultipleSelection = false
+        loadingScreenViews()
     }
 
     override func didReceiveMemoryWarning() {
@@ -60,9 +61,39 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         // Dispose of any resources that can be recreated.
     }
     
+    // To be displayed until weather forecast views have been updated
+    func loadingScreenViews() {
+        let screenSize: CGRect = UIScreen.main.bounds
+        let testView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height))
+        testView.backgroundColor = .white
+        testView.alpha = 1.0
+        testView.tag = 100
+        testView.isUserInteractionEnabled = true
+        self.view.addSubview(testView)
+        
+        let myActivityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.gray)
+        myActivityIndicator.center = view.center
+        myActivityIndicator.startAnimating()
+        myActivityIndicator.tag = 200
+        view.addSubview(myActivityIndicator)
+    }
+    
     func shouldPopulateData() {
         if !WeatherData.sharedInstance.hourlyForecast {
             if WeatherData.sharedInstance.daysCount != weatherCollectionView.numberOfItems(inSection: 0) {
+                if let viewWithTag = self.view.viewWithTag(100) {
+                    
+                    UIView.animate(withDuration: 0.3, animations: { 
+                        viewWithTag.alpha = 0.0
+                    }, completion: { (value: Bool) in
+                        viewWithTag.removeFromSuperview()
+                    })
+                    
+                    //viewWithTag.removeFromSuperview()
+                }
+                if let viewWithTag = self.view.viewWithTag(200) {
+                    viewWithTag.removeFromSuperview()
+                }
                 populateData()
             }
             if newLocation != nil {
@@ -72,6 +103,18 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
             }
         } else {
             if WeatherData.sharedInstance.hourlyWeather.count != weatherCollectionView.numberOfItems(inSection: 0) {
+                if let viewWithTag = self.view.viewWithTag(100) {
+                    UIView.animate(withDuration: 0.3, animations: {
+                        viewWithTag.alpha = 0.0
+                    }, completion: { (value: Bool) in
+                        viewWithTag.removeFromSuperview()
+                    })
+
+                    //viewWithTag.removeFromSuperview()
+                }
+                if let viewWithTag = self.view.viewWithTag(200) {
+                    viewWithTag.removeFromSuperview()
+                }
                 populateData()
             }
             if newLocation != nil {
