@@ -19,13 +19,12 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     // MARK: - Properties
     fileprivate let reuseIdentifier = "DayCell"
     fileprivate let sectionInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
-    fileprivate let apiKey = "ff3516b24bf01703355151a3ba0addc9"
     fileprivate let itemsPerRow: CGFloat = 2
     
     fileprivate let locationManager = CLLocationManager()
-    fileprivate var weatherArray = [DayWeather]()
     var selectedIndex: IndexPath?
     
+    var startingLocation: CLLocation?
     var newLocation: CLLocation?
     var newCityName: String?
     
@@ -34,22 +33,60 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
             newLocation = origin.newLocation
             newCityName = origin.newCityName
             if let latitude = newLocation?.coordinate.latitude {
-                getWeatherData(latitude: latitude, longitude: (newLocation?.coordinate.longitude)!)
+                WeatherData.sharedInstance.getWeatherData(latitude: latitude, longitude: (newLocation?.coordinate.longitude)!)
             }
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        findLocation()
+        
+        // Notification observer for when settings are updated
+        NotificationCenter.default.addObserver(self, selector: #selector(populateData), name: NSNotification.Name(rawValue: settingsDataNCKey), object: nil)
+        
+        // Notification observer for when json data is successfully loaded
+        NotificationCenter.default.addObserver(self, selector: #selector(shouldPopulateData), name: NSNotification.Name(rawValue: weatherDataNCKey), object: nil)
+        
         shareWeatherButton.isEnabled = false
         weatherCollectionView.allowsMultipleSelection = false
-        findLocation()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func shouldPopulateData() {
+        
+        if WeatherData.sharedInstance.daysCount! != weatherCollectionView.numberOfItems(inSection: 0) {
+            populateData()
+        }
+        if newLocation != nil {
+            if cityNameLabel.text != newCityName {
+                populateData()
+            }
+        }
+    }
+    
+    func populateData() {
+        WeatherData.sharedInstance.getLocaleAndDaysToForecast()
+        if newLocation == nil {
+            if let start = startingLocation {
+                WeatherData.sharedInstance.getWeatherData(latitude: start.coordinate.latitude, longitude: start.coordinate.longitude)
+            }
+        } else {
+            if let new = newLocation {
+                WeatherData.sharedInstance.getWeatherData(latitude: new.coordinate.latitude, longitude: new.coordinate.longitude)
+            }
+        }
+        weatherCollectionView.reloadData()
+        updateCollectionViewLabels()
     }
     
     func findLocation() {
@@ -73,85 +110,26 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
             if placemarks!.count > 0 {
                 let placemark = placemarks![0] as CLPlacemark
                 self.getLocationDetails(placemark: placemark, location: manager.location!)
-                
             } else {
                 print("Error retrieving data")
             }
         }
     }
     
-    func getLocationFromCoOrdinates() {
-        
-    }
-    
     func getLocationDetails(placemark: CLPlacemark, location: CLLocation) {
         locationManager.stopUpdatingLocation()
-        getWeatherData(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        startingLocation = location
+        WeatherData.sharedInstance.getWeatherData(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
     }
     
-    func getWeatherData(latitude: Double, longitude: Double) {
-        let url = URL(string: "http://api.openweathermap.org/data/2.5/forecast/daily?lat=\(latitude)&lon=\(longitude)&cnt=10&appid=\(apiKey)")
-        
-        let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
-            DispatchQueue.main.async(execute: {
-                if let unwrappedData = data {
-                    // If successful pass data object to json variable as dictionary
-                    do {
-                        self.convertForecastJSON(weatherData: unwrappedData)
-                    } catch {
-                        // Error popup
-                        print("Error fetching data")
-                    }
-                } else {
-                    // Error popup
-                    print("Unable to retrieve data")
-                }
-            })
-        })
-        task.resume()
-    }
-    
-    func convertForecastJSON(weatherData: Data) {
-        weatherArray.removeAll()
-        do {
-            let json = try JSONSerialization.jsonObject(with: weatherData, options: []) as! Dictionary<String, AnyObject>
-            
-            var city: String?
-            if let cityName = newCityName {
-                cityNameLabel.text = cityName
-            } else {
-                if let cityData = json["city"] as? Dictionary<String, AnyObject> {
-                    if let cityName = cityData["name"] as? String {
-                        city = cityName
-                        cityNameLabel.text = city
-                    }
-                }
-            }
-            if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
-                for forecast in forecastData {
-                    let weatherForecast = DayWeather()
-                    weatherForecast.city = city
-
-                    let epochTime = forecast["dt"] as? Int
-                    let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))
-                    weatherForecast.date = date
-                    if let temperatures = forecast["temp"] as? Dictionary<String, AnyObject> {
-                        weatherForecast.minTemp = (temperatures["min"] as? Double)! - 273.15
-                        weatherForecast.maxTemp = (temperatures["max"] as? Double)! - 273.15
-                    }
-                    if let weather = forecast["weather"] as? [Dictionary<String, AnyObject>] {
-                        weatherForecast.weatherId = weather[0]["id"] as? Int
-                        weatherForecast.weatherMain = weather[0]["main"] as? String
-                        weatherForecast.weatherDescription = weather[0]["description"] as? String
-                        weatherForecast.weatherIcon = weather[0]["icon"] as? String
-                    }
-                    weatherArray.append(weatherForecast)
-                }
-            }
-            weatherCollectionView.reloadData()
-        } catch {
-            print("Error fetching data")
+    func updateCollectionViewLabels() {
+        if let cityName = newCityName {
+            WeatherData.sharedInstance.city = cityName
+            cityNameLabel.text = cityName
+        } else {
+            cityNameLabel.text = WeatherData.sharedInstance.city
         }
+        weatherCollectionView.reloadData()
     }
 
     // MARK: - Navigation
@@ -175,30 +153,34 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return weatherArray.count
+        return WeatherData.sharedInstance.weatherArray.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! WeatherCollectionViewCell
         cell.backgroundColor = UIColor(red: 41/255, green: 128/255, blue: 185/255, alpha: 1.0)
         
-        if !weatherArray.isEmpty {
-            if let weatherDate = weatherArray[indexPath.row].date {
+        if !cell.isSelected {
+            cell.layer.borderWidth = 0.0
+            cell.layer.borderColor = UIColor.clear.cgColor
+        }
+        
+        if !WeatherData.sharedInstance.weatherArray.isEmpty {
+            if let weatherDate = WeatherData.sharedInstance.weatherArray[indexPath.row].date {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "d MMM"
                 cell.dateLabel.text = dateFormatter.string(from: weatherDate)
-                
             }
-            if let weatherIcon = weatherArray[indexPath.row].weatherIcon {
+            if let weatherIcon = WeatherData.sharedInstance.weatherArray[indexPath.row].weatherIcon {
                 let image = UIImage(named: "\(weatherIcon).png")
                 let templateImage = image?.withRenderingMode(.alwaysTemplate)
                 cell.weatherTypeIcon.image = templateImage
                 cell.weatherTypeIcon.tintColor = UIColor.white
             }
-            if let minTemp = weatherArray[indexPath.row].minTemp {
+            if let minTemp = WeatherData.sharedInstance.weatherArray[indexPath.row].minTemp {
                 cell.minTempLabel.text = "Min: \(String(format: "%.0f", minTemp))°C"
             }
-            if let maxTemp = weatherArray[indexPath.row].maxTemp {
+            if let maxTemp = WeatherData.sharedInstance.weatherArray[indexPath.row].maxTemp {
                 cell.maxTempLabel.text = "Max: \(String(format: "%.0f", maxTemp))°C"
             }
         }
@@ -231,18 +213,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         if !shareWeatherButton.isEnabled {
             shareWeatherButton.isEnabled = true
         }
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d MMMM"
-        if let weatherDate = weatherArray[indexPath.row].date {
-            if let weatherDesc = weatherArray[indexPath.row].weatherDescription {
-                let string = "\(dateFormatter.string(from: weatherDate)) \(weatherDesc)"
-                let utterance = AVSpeechUtterance(string: string)
-                utterance.voice = AVSpeechSynthesisVoice(language: "en-GB")
-                let synthesizer = AVSpeechSynthesizer()
-                synthesizer.speak(utterance)
-                selectedIndex = indexPath
-            }
-        }
+        textToSpeech(index: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -254,12 +225,27 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     @IBAction func shareWeatherAction(_ sender: UIBarButtonItem) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM"
-        if let weatherDate = weatherArray[(selectedIndex?.row)!].date {
-            if let weatherDesc = weatherArray[(selectedIndex?.row)!].weatherDescription {
+        if let weatherDate = WeatherData.sharedInstance.weatherArray[(selectedIndex?.row)!].date {
+            if let weatherDesc = WeatherData.sharedInstance.weatherArray[(selectedIndex?.row)!].weatherDescription {
                 let stringToShareArray = [dateFormatter.string(from: weatherDate), weatherDesc]
                 let activityVC = UIActivityViewController(activityItems: stringToShareArray, applicationActivities: nil)
                 activityVC.popoverPresentationController?.sourceView = view
                 self.present(activityVC, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func textToSpeech(index: IndexPath) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMMM"
+        if let weatherDate = WeatherData.sharedInstance.weatherArray[index.row].date {
+            if let weatherDesc = WeatherData.sharedInstance.weatherArray[index.row].weatherDescription {
+                let string = "\(dateFormatter.string(from: weatherDate)) \(weatherDesc). Highs of\(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].maxTemp!)) degrees celsius and lows of \(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].minTemp!)) degrees celsius."
+                let utterance = AVSpeechUtterance(string: string)
+                utterance.voice = AVSpeechSynthesisVoice(language: WeatherData.sharedInstance.voiceLocale!)
+                let synthesizer = AVSpeechSynthesizer()
+                synthesizer.speak(utterance)
+                selectedIndex = index
             }
         }
     }

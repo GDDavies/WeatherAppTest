@@ -8,12 +8,13 @@
 
 import UIKit
 
+let settingsDataNCKey = "com.georgeddavies.settingsData"
+
 class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
     
     @IBOutlet weak var daysToForecastTextField: UITextField!
     @IBOutlet weak var voiceLocaleTextField: UITextField!
     @IBOutlet weak var usersTableView: UITableView!
-    @IBOutlet weak var saveButtonBottomLayoutConstraint: NSLayoutConstraint!
     
     var userArray = [Dictionary<String, Any>]()
     let defaults = UserDefaults.standard
@@ -25,7 +26,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         addUser(sender: sender)
     }
     
-    @IBAction func saveSettingsButton(_ sender: UIButton) {
+    @IBAction func saveSettingsButton(_ sender: UIBarButtonItem) {
         if daysToForecastTextField.text != "" {
             userArray[selectedUserIndex.row]["daysToForecast"] = Int(daysToForecastTextField.text!)
         }
@@ -33,11 +34,12 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         
         self.defaults.set(self.userArray, forKey: "Users")
         self.defaults.synchronize()
+        NotificationCenter.default.post(name: Notification.Name(rawValue: settingsDataNCKey), object: self)
+        dismiss(animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardNotification(notification:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
 
         self.usersTableView.allowsMultipleSelection = false
         populateUsers()
@@ -248,24 +250,4 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         // Pass the selected object to the new view controller.
     }
     */
-    
-    func keyboardNotification(notification: NSNotification) {
-        if let userInfo = notification.userInfo {
-            let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
-            let duration:TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
-            let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
-            let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIViewAnimationOptions.curveEaseInOut.rawValue
-            let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
-            if (endFrame?.origin.y)! >= UIScreen.main.bounds.size.height {
-                self.saveButtonBottomLayoutConstraint?.constant = 0.0
-            } else {
-                self.saveButtonBottomLayoutConstraint?.constant = endFrame?.size.height ?? 0.0
-            }
-            UIView.animate(withDuration: duration,
-                           delay: TimeInterval(0),
-                           options: animationCurve,
-                           animations: { self.view.layoutIfNeeded() },
-                           completion: nil)
-        }
-    }
 }

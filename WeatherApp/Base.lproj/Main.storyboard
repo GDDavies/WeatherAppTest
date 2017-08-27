@@ -126,7 +126,7 @@
                     <navigationItem key="navigationItem" title="Weather App" id="trd-8T-ODW">
                         <barButtonItem key="leftBarButtonItem" title="Settings" id="wUu-rM-SjJ">
                             <connections>
-                                <segue destination="xZk-Fa-og9" kind="show" id="krQ-KE-nuo"/>
+                                <segue destination="gfD-wQ-fRv" kind="presentation" id="krQ-KE-nuo"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Map" id="hgS-WK-sS4">
@@ -202,17 +202,6 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lD6-oI-jMi">
-                                <rect key="frame" x="0.0" y="620" width="375" height="47"/>
-                                <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
-                                <state key="normal" title="Save Settings">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="saveSettingsButton:" destination="xZk-Fa-og9" eventType="touchUpInside" id="OUP-tU-P2l"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zA6-R3-wud">
                                 <rect key="frame" x="16" y="459" width="42" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -223,14 +212,11 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="lD6-oI-jMi" firstAttribute="centerX" secondItem="9wO-Wx-gmZ" secondAttribute="centerX" id="29p-uA-T5F"/>
                             <constraint firstItem="0AM-db-FDz" firstAttribute="centerY" secondItem="X6c-1y-Ndb" secondAttribute="centerY" id="4Ub-Yf-1LT"/>
                             <constraint firstItem="Jjp-se-vv8" firstAttribute="centerY" secondItem="gtd-eE-qgi" secondAttribute="centerY" id="IVW-1r-23k"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Jjp-se-vv8" secondAttribute="trailing" id="KVX-ZB-GVe"/>
-                            <constraint firstItem="lD6-oI-jMi" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.07" id="MLO-eT-MZK"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.35" id="NLa-VH-Df0"/>
                             <constraint firstAttribute="leadingMargin" secondItem="X6c-1y-Ndb" secondAttribute="leading" id="QHU-ut-8eT"/>
-                            <constraint firstItem="lD6-oI-jMi" firstAttribute="width" secondItem="9wO-Wx-gmZ" secondAttribute="width" id="Wwm-JI-9Zm"/>
                             <constraint firstItem="X6c-1y-Ndb" firstAttribute="top" secondItem="gtd-eE-qgi" secondAttribute="bottom" constant="28" id="YXD-Ma-Xpy"/>
                             <constraint firstItem="Jjp-se-vv8" firstAttribute="leading" secondItem="gtd-eE-qgi" secondAttribute="trailing" constant="8" id="fFX-aP-FFh"/>
                             <constraint firstAttribute="leadingMargin" secondItem="gtd-eE-qgi" secondAttribute="leading" id="fnn-RL-BVQ"/>
@@ -238,12 +224,16 @@
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="leading" secondItem="9wO-Wx-gmZ" secondAttribute="leading" id="lBU-gs-YkQ"/>
                             <constraint firstItem="gtd-eE-qgi" firstAttribute="top" secondItem="kn6-hA-g3k" secondAttribute="bottom" constant="21" id="m65-5k-Qar"/>
                             <constraint firstAttribute="trailingMargin" secondItem="0AM-db-FDz" secondAttribute="trailing" id="oYX-0o-mOr"/>
-                            <constraint firstItem="N62-px-POA" firstAttribute="top" secondItem="lD6-oI-jMi" secondAttribute="bottom" id="pW4-lH-Co6"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="top" secondItem="9wO-Wx-gmZ" secondAttribute="topMargin" id="xKE-7L-sxK"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="width" secondItem="9wO-Wx-gmZ" secondAttribute="width" id="xTi-DR-DeF"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="aax-hv-HmM">
+                        <barButtonItem key="leftBarButtonItem" systemItem="save" id="z4w-OH-DaD">
+                            <connections>
+                                <action selector="saveSettingsButton:" destination="xZk-Fa-og9" id="9o3-FF-Q87"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="xMs-WX-f2p">
                             <connections>
                                 <action selector="addUserButton:" destination="xZk-Fa-og9" id="jtp-Uv-dIY"/>
@@ -252,14 +242,13 @@
                     </navigationItem>
                     <connections>
                         <outlet property="daysToForecastTextField" destination="Jjp-se-vv8" id="HWc-XE-P16"/>
-                        <outlet property="saveButtonBottomLayoutConstraint" destination="pW4-lH-Co6" id="ADz-Wy-d7U"/>
                         <outlet property="usersTableView" destination="kn6-hA-g3k" id="Ul2-R4-Pbg"/>
                         <outlet property="voiceLocaleTextField" destination="0AM-db-FDz" id="b9b-B9-P4C"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="anC-9U-azk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3738.4000000000001" y="-1225.6371814092954"/>
+            <point key="canvasLocation" x="4677.6000000000004" y="-1225.6371814092954"/>
         </scene>
         <!--Map ViewVC-->
         <scene sceneID="GpJ-SC-kOj">
@@ -315,7 +304,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GSg-qb-BKE" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="4YX-TE-buK" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="4541.6000000000004" y="-842.42878560719646"/>
+            <point key="canvasLocation" x="4678" y="-564"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="XPp-g4-ybC">
@@ -334,6 +323,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Hx-Ao-amc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2992.8000000000002" y="-563.56821589205401"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Nip-Ut-X4e">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gfD-wQ-fRv" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3Jo-ln-yhO">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="xZk-Fa-og9" kind="relationship" relationship="rootViewController" id="8iV-Gp-TcK"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aza-2y-gxp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3738.4000000000001" y="-1225.6371814092954"/>
         </scene>
     </scenes>
 </document>
