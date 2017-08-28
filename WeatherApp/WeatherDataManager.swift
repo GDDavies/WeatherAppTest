@@ -34,12 +34,7 @@ class WeatherData: NSObject {
             DispatchQueue.main.async(execute: {
                 if let unwrappedData = data {
                     // If successful pass data object to json variable as dictionary
-                    do {
-                        self.convertForecastJSON(weatherData: unwrappedData)
-                    } catch {
-                        // Error popup
-                        print("Error fetching data")
-                    }
+                    self.convertForecastJSON(weatherData: unwrappedData)
                 } else {
                     // Error popup
                     print("Unable to retrieve data")
@@ -109,12 +104,7 @@ class WeatherData: NSObject {
             DispatchQueue.main.async(execute: {
                 if let unwrappedData = data {
                     // If successful pass data object to json variable as dictionary
-                    do {
-                        self.convertHourlyForecast(weatherData: unwrappedData)
-                    } catch {
-                        // Error popup
-                        print("Error fetching data")
-                    }
+                    self.convertHourlyForecast(weatherData: unwrappedData)
                 } else {
                     // Error popup
                     print("Unable to retrieve data")
@@ -137,6 +127,7 @@ class WeatherData: NSObject {
                     let epochTime = forecast["dt"] as? Int
                     let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))
                     hourlyForecastData.date = date
+                    print(date)
                     if let temperatures = forecast["main"] as? Dictionary<String, AnyObject> {
                         hourlyForecastData.temp = (temperatures["temp_max"] as? Double)! - 273.15
                     }

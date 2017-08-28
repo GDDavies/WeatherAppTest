@@ -22,6 +22,10 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     fileprivate let reuseIdentifier = "DayCell"
     fileprivate let sectionInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
     fileprivate let itemsPerRow: CGFloat = 2
+    fileprivate let dayForecastFormat = "d MMM"
+    fileprivate let hourlyForecastFormat = "d MMM - h:mm a"
+    
+    let dateFormatter = DateFormatter()
     
     fileprivate let locationManager = CLLocationManager()
     var selectedIndex: IndexPath?
@@ -42,33 +46,29 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationController?.navigationBar.barTintColor = themeColour
-        
-        cityNameLabel.textColor = themeColour
-        
+        mainViewSetup()
         findLocation()
+        loadingScreenViews()
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
         
         // Notification observer for when settings are updated
         NotificationCenter.default.addObserver(self, selector: #selector(populateData), name: NSNotification.Name(rawValue: settingsDataNCKey), object: nil)
         
-        // Notification observer for when json data is successfully loaded
+        // Notification observers for when json data is successfully loaded
         NotificationCenter.default.addObserver(self, selector: #selector(shouldPopulateData), name: NSNotification.Name(rawValue: weatherDataNCKey), object: nil)
-        
         NotificationCenter.default.addObserver(self, selector: #selector(shouldPopulateData), name: NSNotification.Name(rawValue: hourlyDataNCKey), object: nil)
-        
-        shareWeatherButton.isEnabled = false
-        weatherCollectionView.allowsMultipleSelection = false
-        loadingScreenViews()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
-    // To be displayed until weather forecast views have been updated
+    // MARK: - Setup views
+    
+    func mainViewSetup() {
+        navigationController?.navigationBar.barTintColor = themeColour
+        cityNameLabel.textColor = themeColour
+        shareWeatherButton.isEnabled = false
+        weatherCollectionView.allowsMultipleSelection = false
+    }
+    
+    // Loading view to be displayed until weather forecast views have been updated
     func loadingScreenViews() {
         let screenSize: CGRect = UIScreen.main.bounds
         let testView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height))
@@ -85,49 +85,40 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         view.addSubview(myActivityIndicator)
     }
     
+    // MARK: - Populate data from API
+    
     func shouldPopulateData() {
         if !WeatherData.sharedInstance.hourlyForecast {
             if WeatherData.sharedInstance.daysCount != weatherCollectionView.numberOfItems(inSection: 0) {
-                if let viewWithTag = self.view.viewWithTag(100) {
-                    
-                    UIView.animate(withDuration: 0.3, animations: { 
-                        viewWithTag.alpha = 0.0
-                    }, completion: { (value: Bool) in
-                        viewWithTag.removeFromSuperview()
-                    })
-                    
-                    //viewWithTag.removeFromSuperview()
-                }
-                if let viewWithTag = self.view.viewWithTag(200) {
-                    viewWithTag.removeFromSuperview()
-                }
-                populateData()
+                animateLoadingScreenOut()
             }
-            if newLocation != nil {
-                if cityNameLabel.text != newCityName {
-                    populateData()
-                }
-            }
+            updateLocationNameIfChanged()
         } else {
             if WeatherData.sharedInstance.hourlyWeather.count != weatherCollectionView.numberOfItems(inSection: 0) {
-                if let viewWithTag = self.view.viewWithTag(100) {
-                    UIView.animate(withDuration: 0.3, animations: {
-                        viewWithTag.alpha = 0.0
-                    }, completion: { (value: Bool) in
-                        viewWithTag.removeFromSuperview()
-                    })
-
-                    //viewWithTag.removeFromSuperview()
-                }
-                if let viewWithTag = self.view.viewWithTag(200) {
-                    viewWithTag.removeFromSuperview()
-                }
-                populateData()
+                animateLoadingScreenOut()
             }
-            if newLocation != nil {
-                if cityNameLabel.text != newCityName {
-                    populateData()
-                }
+        }
+        updateLocationNameIfChanged()
+    }
+    
+    func animateLoadingScreenOut() {
+        if let viewWithTag = self.view.viewWithTag(100) {
+            UIView.animate(withDuration: 0.3, animations: {
+                viewWithTag.alpha = 0.0
+            }, completion: { (value: Bool) in
+                viewWithTag.removeFromSuperview()
+            })
+        }
+        if let viewWithTag = self.view.viewWithTag(200) {
+            viewWithTag.removeFromSuperview()
+        }
+        populateData()
+    }
+    
+    func updateLocationNameIfChanged() {
+        if newLocation != nil {
+            if cityNameLabel.text != newCityName {
+                populateData()
             }
         }
     }
@@ -158,6 +149,8 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         weatherCollectionView.reloadData()
         updateCollectionViewLabels()
     }
+    
+    // MARK: - Location methods
     
     func findLocation() {
         locationManager.delegate = self
@@ -217,7 +210,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     // MARK: UICollectionViewDataSource
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
@@ -233,25 +225,24 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! WeatherCollectionViewCell
         cell.backgroundColor = themeColour
+        cell.weatherTypeIcon.tintColor = UIColor.white
         
         if !cell.isSelected {
             cell.layer.borderWidth = 0.0
             cell.layer.borderColor = UIColor.clear.cgColor
         }
         
+        // If daily forecast
         if !WeatherData.sharedInstance.hourlyForecast {
-            
             if !WeatherData.sharedInstance.weatherArray.isEmpty {
                 if let weatherDate = WeatherData.sharedInstance.weatherArray[indexPath.row].date {
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "d MMM"
+                    dateFormatter.dateFormat = dayForecastFormat
                     cell.dateLabel.text = dateFormatter.string(from: weatherDate)
                 }
                 if let weatherIcon = WeatherData.sharedInstance.weatherArray[indexPath.row].weatherIcon {
                     let image = UIImage(named: "\(weatherIcon).png")
                     let templateImage = image?.withRenderingMode(.alwaysTemplate)
                     cell.weatherTypeIcon.image = templateImage
-                    cell.weatherTypeIcon.tintColor = UIColor.white
                 }
                 if let minTemp = WeatherData.sharedInstance.weatherArray[indexPath.row].minTemp {
                     cell.minTempLabel.text = "Min: \(String(format: "%.0f", minTemp))°C"
@@ -261,20 +252,17 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
                 }
             }
             
+        // If hourly forecast
         } else {
-            
             if !WeatherData.sharedInstance.hourlyWeather.isEmpty {
-                
                 if let weatherDate = WeatherData.sharedInstance.hourlyWeather[indexPath.row].date {
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "e MMM - h:mm a"
+                    dateFormatter.dateFormat = hourlyForecastFormat
                     cell.dateLabel.text = dateFormatter.string(from: weatherDate)
                 }
                 if let weatherIcon = WeatherData.sharedInstance.hourlyWeather[indexPath.row].weatherIcon {
                     let image = UIImage(named: "\(weatherIcon).png")
                     let templateImage = image?.withRenderingMode(.alwaysTemplate)
                     cell.weatherTypeIcon.image = templateImage
-                    cell.weatherTypeIcon.tintColor = UIColor.white
                 }
                 if let maxTemp = WeatherData.sharedInstance.hourlyWeather[indexPath.row].temp {
                     cell.maxTempLabel.text = "Max: \(String(format: "%.0f", maxTemp))°C"
@@ -286,6 +274,25 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         return cell
     }
     
+    // MARK: UICollectionViewDelegate
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = weatherCollectionView.cellForItem(at: indexPath)
+        cell?.layer.borderColor = UIColor.lightGray.cgColor
+        cell?.layer.borderWidth = 3.0
+        if !shareWeatherButton.isEnabled {
+            shareWeatherButton.isEnabled = true
+        }
+        textToSpeech(index: indexPath, hourly: WeatherData.sharedInstance.hourlyForecast)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        let cell = weatherCollectionView.cellForItem(at: indexPath)
+        cell?.layer.borderColor = UIColor.clear.cgColor
+        cell?.layer.borderWidth = 0.0
+    }
+    
+    // Collection view format/style
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
@@ -302,28 +309,10 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return sectionInsets.left
     }
-
-    // MARK: UICollectionViewDelegate
-
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let cell = weatherCollectionView.cellForItem(at: indexPath)
-        cell?.layer.borderColor = UIColor.lightGray.cgColor
-        cell!.layer.borderWidth = 3.0
-        if !shareWeatherButton.isEnabled {
-            shareWeatherButton.isEnabled = true
-        }
-        textToSpeech(index: indexPath, hourly: WeatherData.sharedInstance.hourlyForecast)
-    }
     
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        let cell = weatherCollectionView.cellForItem(at: indexPath)
-        cell?.layer.borderColor = UIColor.clear.cgColor
-        cell!.layer.borderWidth = 0.0
-    }
-    
+    // Share action
     @IBAction func shareWeatherAction(_ sender: UIBarButtonItem) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d MMMM"
+        dateFormatter.dateFormat = dayForecastFormat
         if let weatherDate = WeatherData.sharedInstance.weatherArray[(selectedIndex?.row)!].date {
             if let weatherDesc = WeatherData.sharedInstance.weatherArray[(selectedIndex?.row)!].weatherDescription {
                 let stringToShareArray = [dateFormatter.string(from: weatherDate), weatherDesc]
@@ -334,34 +323,29 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         }
     }
     
+    // Convert collection view cell text to speech
     func textToSpeech(index: IndexPath, hourly: Bool) {
+        var textToSpeak = ""
         if !hourly {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "d MMMM"
+            dateFormatter.dateFormat = dayForecastFormat
             if let weatherDate = WeatherData.sharedInstance.weatherArray[index.row].date {
                 if let weatherDesc = WeatherData.sharedInstance.weatherArray[index.row].weatherDescription {
-                    let string = "\(dateFormatter.string(from: weatherDate)) \(weatherDesc). Highs of\(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].maxTemp!)) degrees celsius and lows of \(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].minTemp!)) degrees celsius."
-                    let utterance = AVSpeechUtterance(string: string)
-                    utterance.voice = AVSpeechSynthesisVoice(language: WeatherData.sharedInstance.voiceLocale)
-                    let synthesizer = AVSpeechSynthesizer()
-                    synthesizer.speak(utterance)
-                    selectedIndex = index
+                    textToSpeak = "\(dateFormatter.string(from: weatherDate)) \(weatherDesc). Highs of\(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].maxTemp!)) degrees celsius and lows of \(String(format: "%.0f", WeatherData.sharedInstance.weatherArray[index.row].minTemp!)) degrees celsius."
                 }
             }
         }else {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "e MMM - h:mm a"
+            dateFormatter.dateFormat = hourlyForecastFormat
             if let weatherDate = WeatherData.sharedInstance.hourlyWeather[index.row].date {
                 if let weatherDesc = WeatherData.sharedInstance.hourlyWeather[index.row].weatherDescription {
-                    let string = "\(dateFormatter.string(from: weatherDate)) \(weatherDesc). High of\(String(format: "%.0f", WeatherData.sharedInstance.hourlyWeather[index.row].temp!)) degrees celsius."
-                    let utterance = AVSpeechUtterance(string: string)
-                    utterance.voice = AVSpeechSynthesisVoice(language: WeatherData.sharedInstance.voiceLocale)
-                    let synthesizer = AVSpeechSynthesizer()
-                    synthesizer.speak(utterance)
-                    selectedIndex = index
+                    textToSpeak = "\(dateFormatter.string(from: weatherDate)) \(weatherDesc). High of\(String(format: "%.0f", WeatherData.sharedInstance.hourlyWeather[index.row].temp!)) degrees celsius."
                 }
             }
         }
+        let utterance = AVSpeechUtterance(string: textToSpeak)
+        utterance.voice = AVSpeechSynthesisVoice(language: WeatherData.sharedInstance.voiceLocale)
+        let synthesizer = AVSpeechSynthesizer()
+        synthesizer.speak(utterance)
+        selectedIndex = index
     }
 }
 
