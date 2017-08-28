@@ -48,27 +48,24 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.usersTableView.allowsMultipleSelection = false
         populateUsers()
-        usersTableView.selectRow(at: selectedUserIndex, animated: false, scrollPosition: .top)
-        userArray[selectedUserIndex.row]["isSelected"] = true
-        daysToForecastTextField.tag = 0
-        
+        setUpViewController()
         populateTextFields()
         
         let pickerView = UIPickerView()
         pickerView.delegate = self
         voiceLocaleTextField.inputView = pickerView
-        
-        navigationController?.navigationBar.barTintColor = themeColour
-        
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
+    func setUpViewController() {
+        navigationController?.navigationBar.barTintColor = themeColour
+        self.usersTableView.allowsMultipleSelection = false
+        usersTableView.selectRow(at: selectedUserIndex, animated: false, scrollPosition: .top)
+        userArray[selectedUserIndex.row]["isSelected"] = true
+        daysToForecastTextField.tag = 0
+    }
+    
+    // Save default user to user array with default values
     func addDefaultUser() {
         let userDict = ["username": "Default User",
                         "daysToForecast": 10,
@@ -87,9 +84,13 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         for element in UserDefaults.standard.dictionaryRepresentation() {
             if element.key == "Users" {
                 var i = 0
+                // Loop through users
                 for user in element.value as! Array<[String:Any]> {
+                    // Add user to array of users
                     userArray.append(user)
+                    // Check if user is selected
                     if user["isSelected"] as? Bool == true {
+                        // If user is selected, save IndexPath
                         numOfSelectedUsers = 1
                         selectedUserIndex = IndexPath(row: i, section: 0)
                     }
@@ -97,9 +98,12 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
                 }
             }
         }
+        // If no users exist, add default user
         if userArray.count == 0 {
             addDefaultUser()
         }
+        
+        // If no users are selected then select first user
         if numOfSelectedUsers == 0 {
             selectedUserIndex = IndexPath(row: 0, section: 0)
             userArray[selectedUserIndex.row]["isSelected"] = true
@@ -123,10 +127,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         displayPopUp(title: "Add User", message: "Enter the new user's name below", placeHolder: "e.g. Matt", type: "Save")
     }
     
-    func userAlreadyExist(userKey: String) -> Bool {
-        return UserDefaults.standard.object(forKey: userKey) != nil
-    }
-    
+    // Make sure number of days is <= 16
     func daysToForecastIsValid(settingsArray: Array<String>) -> Bool {
         let days = Int(settingsArray[0])
         if days! > 16 {
@@ -170,23 +171,22 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         usersTableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         selectedUserIndex = indexPath
-        
-        userArray[indexPath.row]["isSelected"] = true
-        self.defaults.set(self.userArray, forKey: "Users")
-        self.defaults.synchronize()
-
+        saveIsUserSelected(userIndexPath: indexPath, isSelected: true)
         populateTextFields()
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         usersTableView.cellForRow(at: indexPath)?.accessoryType = .none
-        
-        userArray[indexPath.row]["isSelected"] = false
+        saveIsUserSelected(userIndexPath: indexPath, isSelected: false)
+    }
+    
+    func saveIsUserSelected(userIndexPath: IndexPath, isSelected: Bool) {
+        userArray[userIndexPath.row]["isSelected"] = isSelected
         self.defaults.set(self.userArray, forKey: "Users")
         self.defaults.synchronize()
     }
     
-    // MARK: - Textfield Methods
+    // MARK: - Textfield methods
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if textField.tag == 0 {
@@ -200,6 +200,8 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         }
         return false
     }
+    
+    // MARK: - Reusable popup view
     
     func displayPopUp(title: String, message: String, placeHolder: String, type: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -255,14 +257,4 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         voiceLocaleTextField.text = localeOptions[row]
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 }

@@ -127,7 +127,6 @@ class WeatherData: NSObject {
                     let epochTime = forecast["dt"] as? Int
                     let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))
                     hourlyForecastData.date = date
-                    print(date)
                     if let temperatures = forecast["main"] as? Dictionary<String, AnyObject> {
                         hourlyForecastData.temp = (temperatures["temp_max"] as? Double)! - 273.15
                     }
