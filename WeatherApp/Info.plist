@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>In order to search with Siri please allow WeatherApp to transcribe your speech.</string>
 	<key>NSMicrophoneUsageDescription</key>

@@ -21,11 +21,11 @@
                         <viewControllerLayoutGuide type="bottom" id="8lS-Io-PDG"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8QY-zr-Qqp">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="MjT-jG-9io">
-                                <rect key="frame" x="0.0" y="137" width="375" height="486"/>
+                                <rect key="frame" x="0.0" y="73" width="375" height="486"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="n4t-oW-vep">
                                     <size key="itemSize" width="123" height="123"/>
@@ -93,16 +93,17 @@
                                 </connections>
                             </collectionView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="meD-U4-L20">
-                                <rect key="frame" x="16" y="72" width="121.5" height="65"/>
-                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Regular" family="Apple SD Gothic Neo" pointSize="54"/>
+                                <rect key="frame" x="6" y="20" width="129.5" height="65"/>
+                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Bold" family="Apple SD Gothic Neo" pointSize="54"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vdL-fu-CbJ">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="559" width="375" height="44"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="QSz-rp-rsY"/>
                                     <barButtonItem systemItem="action" id="OfU-RH-cjT">
+                                        <color key="tintColor" red="0.16078431369999999" green="0.50196078430000002" blue="0.72549019609999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="shareWeatherAction:" destination="DRZ-yQ-KaX" id="r16-Md-6qR"/>
                                         </connections>
@@ -112,24 +113,27 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="meD-U4-L20" firstAttribute="top" secondItem="ljp-5B-A4Y" secondAttribute="bottom" constant="8" id="6ed-7a-lG1"/>
                             <constraint firstItem="MjT-jG-9io" firstAttribute="leading" secondItem="8QY-zr-Qqp" secondAttribute="leading" id="8AE-t5-0cj"/>
-                            <constraint firstItem="MjT-jG-9io" firstAttribute="top" secondItem="meD-U4-L20" secondAttribute="bottom" id="AI4-bF-8pl"/>
+                            <constraint firstItem="MjT-jG-9io" firstAttribute="top" secondItem="meD-U4-L20" secondAttribute="bottom" constant="-12" id="AI4-bF-8pl"/>
                             <constraint firstItem="8lS-Io-PDG" firstAttribute="top" secondItem="vdL-fu-CbJ" secondAttribute="bottom" id="Ds2-Lb-qPu"/>
                             <constraint firstItem="vdL-fu-CbJ" firstAttribute="leading" secondItem="8QY-zr-Qqp" secondAttribute="leading" id="F35-hi-Hhw"/>
-                            <constraint firstItem="meD-U4-L20" firstAttribute="leading" secondItem="8QY-zr-Qqp" secondAttribute="leadingMargin" id="HxL-fv-NeI"/>
+                            <constraint firstItem="meD-U4-L20" firstAttribute="leading" secondItem="8QY-zr-Qqp" secondAttribute="leadingMargin" constant="-10" id="HxL-fv-NeI"/>
                             <constraint firstAttribute="trailing" secondItem="vdL-fu-CbJ" secondAttribute="trailing" id="VZv-Yz-pza"/>
                             <constraint firstAttribute="trailing" secondItem="MjT-jG-9io" secondAttribute="trailing" id="Vjx-xZ-z2c"/>
                             <constraint firstItem="vdL-fu-CbJ" firstAttribute="top" secondItem="MjT-jG-9io" secondAttribute="bottom" id="dt7-xX-F3V"/>
+                            <constraint firstItem="MjT-jG-9io" firstAttribute="top" secondItem="ljp-5B-A4Y" secondAttribute="bottom" constant="73" id="lkO-T2-cG0"/>
+                            <constraint firstItem="meD-U4-L20" firstAttribute="top" secondItem="ljp-5B-A4Y" secondAttribute="bottom" constant="20" id="qnr-YI-hLb"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Weather App" id="trd-8T-ODW">
-                        <barButtonItem key="leftBarButtonItem" title="Settings" id="wUu-rM-SjJ">
+                        <barButtonItem key="leftBarButtonItem" image="settings" id="wUu-rM-SjJ">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <segue destination="gfD-wQ-fRv" kind="presentation" id="krQ-KE-nuo"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Map" id="hgS-WK-sS4">
+                        <barButtonItem key="rightBarButtonItem" image="map" id="hgS-WK-sS4">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <segue destination="iWA-No-fKC" kind="show" identifier="ShowMapView" id="5sg-oa-UIF"/>
                             </connections>
@@ -266,14 +270,14 @@
                         <viewControllerLayoutGuide type="bottom" id="JcA-0j-S9M"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="9di-aV-hV6">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mgO-hW-IXp">
-                                <rect key="frame" x="0.0" y="108" width="375" height="515"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="515"/>
                             </mapView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="cW7-oL-7Cn">
-                                <rect key="frame" x="38" y="72" width="300" height="29"/>
+                                <rect key="frame" x="38" y="8" width="300" height="29"/>
                                 <segments>
                                     <segment title="Map"/>
                                     <segment title="Satelite"/>
@@ -284,10 +288,11 @@
                                 </connections>
                             </segmentedControl>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DMw-tR-MIl">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="559" width="375" height="44"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="hh8-Pe-lCf"/>
                                     <barButtonItem title="Siri" id="P4a-Cl-3Hm">
+                                        <color key="tintColor" red="0.16078431369999999" green="0.50196078430000002" blue="0.72549019609999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="activateSiriButton:" destination="iWA-No-fKC" id="c8f-k7-LNy"/>
                                         </connections>
@@ -312,14 +317,22 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="M3T-Ym-Xs2">
                         <barButtonItem key="leftBarButtonItem" title="&lt; Back" id="lIf-5J-bxB">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <segue destination="4YX-TE-buK" kind="unwind" unwindAction="unwind:" id="NkQ-1c-cSf"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="search" id="70t-hn-lsZ">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="mapSearch:" destination="iWA-No-fKC" id="haT-sp-sex"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="mapView" destination="mgO-hW-IXp" id="Dfp-x8-b8P"/>
+                        <outlet property="segmentedControlOutlet" destination="cW7-oL-7Cn" id="Dns-I6-iOz"/>
                         <outlet property="siriButton" destination="P4a-Cl-3Hm" id="h0I-6R-CJA"/>
                     </connections>
                 </viewController>
@@ -333,7 +346,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="DuE-fr-2vy" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="pVX-fR-wID">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="pVX-fR-wID">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -365,4 +378,9 @@
             <point key="canvasLocation" x="3738.4000000000001" y="-1225.6371814092954"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="map" width="25" height="25"/>
+        <image name="search" width="25" height="25"/>
+        <image name="settings" width="25" height="25"/>
+    </resources>
 </document>

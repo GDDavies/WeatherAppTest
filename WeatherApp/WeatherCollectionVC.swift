@@ -10,6 +10,8 @@ import UIKit
 import CoreLocation
 import AVFoundation
 
+let themeColour = UIColor(red: 41/255, green: 128/255, blue: 185/255, alpha: 1.0)
+
 class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource, CLLocationManagerDelegate, AVSpeechSynthesizerDelegate {
 
     @IBOutlet weak var weatherCollectionView: UICollectionView!
@@ -37,9 +39,15 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
             }
         }
     }
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationController?.navigationBar.barTintColor = themeColour
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor(red: 44/255, green: 62/255, blue: 80/255, alpha: 1.0)]
+        
+        cityNameLabel.textColor = themeColour
+        
         findLocation()
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
         
@@ -225,7 +233,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! WeatherCollectionViewCell
-        cell.backgroundColor = UIColor(red: 41/255, green: 128/255, blue: 185/255, alpha: 1.0)
+        cell.backgroundColor = themeColour
         
         if !cell.isSelected {
             cell.layer.borderWidth = 0.0

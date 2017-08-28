@@ -14,7 +14,9 @@ import Speech
 
 class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
 
+    @IBOutlet weak var segmentedControlOutlet: UISegmentedControl!
     @IBOutlet weak var mapView: MKMapView!
+    
     var location: CLLocation?
     var newLocation: CLLocation?
     var newCityName: String?
@@ -59,6 +61,11 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
         }
     }
     
+    
+    @IBAction func mapSearch(_ sender: UIBarButtonItem) {
+        searchLocationAction(sender: sender)
+    }
+    
     @IBOutlet weak var siriButton: UIBarButtonItem!
     
     @IBAction func activateSiriButton(_ sender: UIBarButtonItem) {
@@ -68,12 +75,7 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let searchLocationButton = UIBarButtonItem(
-            title: "Weather Search",
-            style: .plain,
-            target: self,
-            action: #selector(searchLocationAction(sender:))
-        )
+
         if let startLocation = location {
             goToLocationOnMap(location: startLocation)
         }
@@ -84,9 +86,8 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
             siriButton.isEnabled = false
         }
 
-        
-        self.navigationItem.setRightBarButton(searchLocationButton, animated: true)
-        self.navigationController?.title = ""
+        self.segmentedControlOutlet.tintColor = themeColour
+        self.navigationController?.title = "Map"
     }
 
     override func didReceiveMemoryWarning() {
