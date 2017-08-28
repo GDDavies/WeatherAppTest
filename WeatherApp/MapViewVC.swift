@@ -24,6 +24,11 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
     
     let audioEngine = AVAudioEngine()
     
+    var backgroundView = UIView()
+    var dialogueView = UIView()
+    
+    @IBOutlet weak var siriButton: UIBarButtonItem!
+    
     // MARK: - Version check
     // Only enable Siri search in iOS 10+
     var speechRecogniser: Any? = {
@@ -65,10 +70,9 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
     @IBAction func mapSearch(_ sender: UIBarButtonItem) {
         searchLocationAction(sender: sender)
     }
-    
-    @IBOutlet weak var siriButton: UIBarButtonItem!
-    
+        
     @IBAction func activateSiriButton(_ sender: UIBarButtonItem) {
+        siriButton.tintColor = UIColor.red
         speechToSearch()
     }
     
@@ -80,14 +84,9 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
             goToLocationOnMap(location: startLocation)
         }
         
-        if #available(iOS 10.0, *) {
-            siriButton.isEnabled = true
-        } else {
-            siriButton.isEnabled = false
-        }
+        requestSpeechAuthorization()
 
         self.segmentedControlOutlet.tintColor = themeColour
-        self.navigationController?.title = "Map"
     }
 
     override func didReceiveMemoryWarning() {
@@ -145,6 +144,28 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
         }
     }
     
+    //MARK: - Check Authorization Status
+    func requestSpeechAuthorization() {
+        if #available(iOS 10.0, *) {
+            SFSpeechRecognizer.requestAuthorization { authStatus in
+                OperationQueue.main.addOperation {
+                    switch authStatus {
+                    case .authorized:
+                        self.siriButton.isEnabled = true
+                    case .denied:
+                        self.siriButton.isEnabled = false
+                    case .restricted:
+                        self.siriButton.isEnabled = false
+                    case .notDetermined:
+                        self.siriButton.isEnabled = false
+                    }
+                }
+            }
+        } else {
+            self.siriButton.isEnabled = false
+        }
+    }
+    
     func speechToSearch() {
         
         if #available(iOS 10.0, *) {
@@ -172,12 +193,21 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
                 // A recogniser is not available right now
                 return
             }
-            
-            
+
             recognitionTask = (speechRecogniser as! SFSpeechRecognizer).recognitionTask(with: request as! SFSpeechRecognitionRequest, resultHandler: { result, error in
                 if let result = result {
                     let transcribedString = result.bestTranscription.formattedString
-                    print(transcribedString)
+                    
+                    if transcribedString.components(separatedBy: " ").count == 1 {
+                        self.searchForLocation(text: transcribedString)
+                        print(transcribedString)
+                        self.audioEngine.stop()
+                        if let node = self.audioEngine.inputNode {
+                            node.removeTap(onBus: 0)
+                        }
+                        (self.recognitionTask as! SFSpeechRecognitionTask).cancel()
+                        self.siriButton.tintColor = themeColour
+                    }
                 } else if let error = error {
                     print(error)
                 }
@@ -189,5 +219,4 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
         
         
     }
-    
 }

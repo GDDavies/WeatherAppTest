@@ -158,15 +158,15 @@
                         <viewControllerLayoutGuide type="bottom" id="N62-px-POA"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="9wO-Wx-gmZ">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="kn6-hA-g3k">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="233.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="181"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SettingsCell" id="Kwy-6M-1Pz">
-                                        <rect key="frame" x="0.0" y="55" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="56" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Kwy-6M-1Pz" id="cl1-Rm-O31">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -180,19 +180,19 @@
                                 </connections>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Voice locale" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X6c-1y-Ndb">
-                                <rect key="frame" x="16" y="303.5" width="92" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <rect key="frame" x="16" y="250" width="85" height="20"/>
+                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Regular" family="Apple SD Gothic Neo" pointSize="17"/>
+                                <color key="textColor" red="0.19394242763519287" green="0.57775229215621948" blue="0.77514171600341797" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No. days forecast" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gtd-eE-qgi">
-                                <rect key="frame" x="16" y="254.5" width="134" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <rect key="frame" x="16" y="202" width="123.5" height="20"/>
+                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Regular" family="Apple SD Gothic Neo" pointSize="17"/>
+                                <color key="textColor" red="0.19394242763519287" green="0.57775229215621948" blue="0.77514171600341797" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Jjp-se-vv8">
-                                <rect key="frame" x="158" y="249.5" width="201" height="30"/>
+                                <rect key="frame" x="147.5" y="196.5" width="211.5" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
@@ -201,19 +201,19 @@
                                 </connections>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0AM-db-FDz">
-                                <rect key="frame" x="158" y="298.5" width="201" height="30"/>
+                                <rect key="frame" x="147.5" y="244.5" width="211.5" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hourly forecast" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zA6-R3-wud">
-                                <rect key="frame" x="16" y="352.5" width="117.5" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <rect key="frame" x="16" y="298" width="109.5" height="20"/>
+                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Regular" family="Apple SD Gothic Neo" pointSize="17"/>
+                                <color key="textColor" red="0.19394242763519287" green="0.57775229215621948" blue="0.77514171600341797" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="wwN-vK-9A1">
-                                <rect key="frame" x="310" y="348" width="51" height="31"/>
+                                <rect key="frame" x="310" y="293" width="51" height="31"/>
                             </switch>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -222,7 +222,7 @@
                             <constraint firstAttribute="trailingMargin" secondItem="wwN-vK-9A1" secondAttribute="trailing" id="8Hz-p7-osi"/>
                             <constraint firstItem="Jjp-se-vv8" firstAttribute="centerY" secondItem="gtd-eE-qgi" secondAttribute="centerY" id="IVW-1r-23k"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Jjp-se-vv8" secondAttribute="trailing" id="KVX-ZB-GVe"/>
-                            <constraint firstItem="kn6-hA-g3k" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.35" id="NLa-VH-Df0"/>
+                            <constraint firstItem="kn6-hA-g3k" firstAttribute="height" secondItem="9wO-Wx-gmZ" secondAttribute="height" multiplier="0.3" id="NLa-VH-Df0"/>
                             <constraint firstAttribute="leadingMargin" secondItem="X6c-1y-Ndb" secondAttribute="leading" id="QHU-ut-8eT"/>
                             <constraint firstAttribute="leadingMargin" secondItem="zA6-R3-wud" secondAttribute="leading" id="UQp-fF-ryE"/>
                             <constraint firstItem="X6c-1y-Ndb" firstAttribute="top" secondItem="gtd-eE-qgi" secondAttribute="bottom" constant="28" id="YXD-Ma-Xpy"/>
@@ -240,11 +240,13 @@
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="aax-hv-HmM">
                         <barButtonItem key="leftBarButtonItem" systemItem="save" id="z4w-OH-DaD">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="saveSettingsButton:" destination="xZk-Fa-og9" id="9o3-FF-Q87"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="xMs-WX-f2p">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="addUserButton:" destination="xZk-Fa-og9" id="jtp-Uv-dIY"/>
                             </connections>
@@ -261,7 +263,7 @@
             </objects>
             <point key="canvasLocation" x="4677.6000000000004" y="-1225.6371814092954"/>
         </scene>
-        <!--Map ViewVC-->
+        <!--Locations-->
         <scene sceneID="GpJ-SC-kOj">
             <objects>
                 <viewController id="iWA-No-fKC" customClass="MapViewVC" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -291,7 +293,7 @@
                                 <rect key="frame" x="0.0" y="559" width="375" height="44"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="hh8-Pe-lCf"/>
-                                    <barButtonItem title="Siri" id="P4a-Cl-3Hm">
+                                    <barButtonItem image="microphone" id="P4a-Cl-3Hm">
                                         <color key="tintColor" red="0.16078431369999999" green="0.50196078430000002" blue="0.72549019609999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="activateSiriButton:" destination="iWA-No-fKC" id="c8f-k7-LNy"/>
@@ -315,7 +317,7 @@
                         </constraints>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="M3T-Ym-Xs2">
+                    <navigationItem key="navigationItem" title="Locations" id="M3T-Ym-Xs2">
                         <barButtonItem key="leftBarButtonItem" title="&lt; Back" id="lIf-5J-bxB">
                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
@@ -333,20 +335,20 @@
                     <connections>
                         <outlet property="mapView" destination="mgO-hW-IXp" id="Dfp-x8-b8P"/>
                         <outlet property="segmentedControlOutlet" destination="cW7-oL-7Cn" id="Dns-I6-iOz"/>
-                        <outlet property="siriButton" destination="P4a-Cl-3Hm" id="h0I-6R-CJA"/>
+                        <outlet property="siriButton" destination="P4a-Cl-3Hm" id="E5r-2c-Yd7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GSg-qb-BKE" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="4YX-TE-buK" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="4678" y="-564"/>
+            <point key="canvasLocation" x="4677.6000000000004" y="-564.46776611694156"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="XPp-g4-ybC">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="DuE-fr-2vy" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="pVX-fR-wID">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="pVX-fR-wID">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -364,7 +366,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gfD-wQ-fRv" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3Jo-ln-yhO">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="3Jo-ln-yhO">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -380,6 +382,7 @@
     </scenes>
     <resources>
         <image name="map" width="25" height="25"/>
+        <image name="microphone" width="25" height="25"/>
         <image name="search" width="25" height="25"/>
         <image name="settings" width="25" height="25"/>
     </resources>

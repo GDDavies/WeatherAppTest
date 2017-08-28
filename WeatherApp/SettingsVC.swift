@@ -59,6 +59,9 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         let pickerView = UIPickerView()
         pickerView.delegate = self
         voiceLocaleTextField.inputView = pickerView
+        
+        navigationController?.navigationBar.barTintColor = themeColour
+        
     }
 
     override func didReceiveMemoryWarning() {

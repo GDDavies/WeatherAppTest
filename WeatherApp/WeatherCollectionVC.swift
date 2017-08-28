@@ -44,7 +44,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         super.viewDidLoad()
         
         navigationController?.navigationBar.barTintColor = themeColour
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor(red: 44/255, green: 62/255, blue: 80/255, alpha: 1.0)]
         
         cityNameLabel.textColor = themeColour
         
