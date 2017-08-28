@@ -66,7 +66,6 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
         }
     }
     
-    
     @IBAction func mapSearch(_ sender: UIBarButtonItem) {
         searchLocationAction(sender: sender)
     }
@@ -78,21 +77,14 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-
+        self.segmentedControlOutlet.tintColor = themeColour
         if let startLocation = location {
             goToLocationOnMap(location: startLocation)
         }
-        
         requestSpeechAuthorization()
-
-        self.segmentedControlOutlet.tintColor = themeColour
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+    // MARK: - Location methods
     
     func goToLocationOnMap(location: CLLocation) {
         var userLocation: CLLocation?
@@ -138,13 +130,13 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
                     self.newCityName = placemark?.locality
                     self.newLocation = placemark?.location
                     self.goToLocationOnMap(location: self.newLocation!)
-
                 }
             })
         }
     }
     
-    //MARK: - Check Authorization Status
+    //MARK: - Check authorization status
+    
     func requestSpeechAuthorization() {
         if #available(iOS 10.0, *) {
             SFSpeechRecognizer.requestAuthorization { authStatus in
@@ -165,6 +157,8 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
             self.siriButton.isEnabled = false
         }
     }
+    
+    // MARK: - Siri
     
     func speechToSearch() {
         
@@ -216,7 +210,5 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
         } else {
             // Fallback on earlier versions
         }
-        
-        
     }
 }
