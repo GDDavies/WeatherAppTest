@@ -51,15 +51,8 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         loadingScreenViews()
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
         
-        // Determine orientation and layout cells accordingly
-        if UIScreen.main.bounds.height > UIScreen.main.bounds.width {
-            itemsPerRow = 2
-        } else {
-            itemsPerRow = 2
-        }
-        
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Weather", style: .plain, target: nil, action: nil)
         
         // Notification observer for when settings are updated
         NotificationCenter.default.addObserver(self, selector: #selector(populateData), name: NSNotification.Name(rawValue: settingsDataNCKey), object: nil)
@@ -76,25 +69,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         cityNameLabel.textColor = themeColour
         shareWeatherButton.isEnabled = false
         weatherCollectionView.allowsMultipleSelection = false
-    }
-    
-    func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        
-        coordinator.animate(alongsideTransition: { (UIViewControllerTransitionCoordinatorContext) -> Void in
-            
-        }, completion: { (UIViewControllerTransitionCoordinatorContext) -> Void in
-            print("rotation completed")
-        })
-        super.viewWillTransition(to: size, with: coordinator)
-
-        
-        if UIDevice.current.orientation.isLandscape {
-            itemsPerRow = 2.0
-        } else {
-            itemsPerRow = 2.0
-        }
-
-
     }
     
     override func viewDidLayoutSubviews() {
