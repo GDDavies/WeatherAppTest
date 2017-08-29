@@ -21,7 +21,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     // MARK: - Properties
     fileprivate let reuseIdentifier = "DayCell"
     fileprivate let sectionInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
-    fileprivate let itemsPerRow: CGFloat = 2
+    fileprivate var itemsPerRow: CGFloat = 2.0
     fileprivate let dayForecastFormat = "d MMM"
     fileprivate let hourlyForecastFormat = "d MMM - h:mm a"
     
@@ -51,6 +51,13 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         loadingScreenViews()
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
         
+        // Determine orientation and layout cells accordingly
+        if UIScreen.main.bounds.height > UIScreen.main.bounds.width {
+            itemsPerRow = 2
+        } else {
+            itemsPerRow = 2
+        }
+        
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
@@ -69,6 +76,30 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         cityNameLabel.textColor = themeColour
         shareWeatherButton.isEnabled = false
         weatherCollectionView.allowsMultipleSelection = false
+    }
+    
+    func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        
+        coordinator.animate(alongsideTransition: { (UIViewControllerTransitionCoordinatorContext) -> Void in
+            
+        }, completion: { (UIViewControllerTransitionCoordinatorContext) -> Void in
+            print("rotation completed")
+        })
+        super.viewWillTransition(to: size, with: coordinator)
+
+        
+        if UIDevice.current.orientation.isLandscape {
+            itemsPerRow = 2.0
+        } else {
+            itemsPerRow = 2.0
+        }
+
+
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        weatherCollectionView.collectionViewLayout.invalidateLayout()
     }
     
     // Loading view to be displayed until weather forecast views have been updated
