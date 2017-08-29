@@ -35,7 +35,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     var newCityName: String?
     
     @IBAction func unwind(_ segue: UIStoryboardSegue) {
-        print(1)
         if let origin = segue.source as? MapViewVC {
             newLocation = origin.newLocation
             newCityName = origin.newCityName
@@ -79,12 +78,12 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     // Loading view to be displayed until weather forecast views have been updated
     func loadingScreenViews() {
         let screenSize: CGRect = UIScreen.main.bounds
-        let testView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height))
-        testView.backgroundColor = .white
-        testView.alpha = 1.0
-        testView.tag = 100
-        testView.isUserInteractionEnabled = true
-        self.view.addSubview(testView)
+        let loadingView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height))
+        loadingView.backgroundColor = .white
+        loadingView.alpha = 1.0
+        loadingView.tag = 100
+        loadingView.isUserInteractionEnabled = true
+        self.view.addSubview(loadingView)
         
         let myActivityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.gray)
         myActivityIndicator.center = view.center
