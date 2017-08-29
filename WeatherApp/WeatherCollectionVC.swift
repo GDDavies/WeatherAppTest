@@ -52,6 +52,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
         
         navigationController?.navigationBar.tintColor = UIColor.white
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         // Notification observer for when settings are updated
         NotificationCenter.default.addObserver(self, selector: #selector(populateData), name: NSNotification.Name(rawValue: settingsDataNCKey), object: nil)
