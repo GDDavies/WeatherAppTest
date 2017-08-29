@@ -78,6 +78,7 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.segmentedControlOutlet.tintColor = themeColour
+       
         if let startLocation = location {
             goToLocationOnMap(location: startLocation)
         }

@@ -166,10 +166,10 @@
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SettingsCell" id="Kwy-6M-1Pz">
-                                        <rect key="frame" x="0.0" y="56" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Kwy-6M-1Pz" id="cl1-Rm-O31">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -318,12 +318,6 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Locations" id="M3T-Ym-Xs2">
-                        <barButtonItem key="leftBarButtonItem" title="&lt; Back" id="lIf-5J-bxB">
-                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <segue destination="4YX-TE-buK" kind="unwind" unwindAction="unwind:" id="NkQ-1c-cSf"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="search" id="70t-hn-lsZ">
                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
@@ -339,7 +333,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GSg-qb-BKE" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="4YX-TE-buK" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="4677.6000000000004" y="-564.46776611694156"/>
         </scene>
@@ -366,7 +359,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gfD-wQ-fRv" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="3Jo-ln-yhO">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="3Jo-ln-yhO">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
