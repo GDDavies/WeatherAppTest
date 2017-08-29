@@ -35,6 +35,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     var newCityName: String?
     
     @IBAction func unwind(_ segue: UIStoryboardSegue) {
+        print(1)
         if let origin = segue.source as? MapViewVC {
             newLocation = origin.newLocation
             newCityName = origin.newCityName
@@ -52,7 +53,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
         
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Weather", style: .plain, target: nil, action: nil)
         
         // Notification observer for when settings are updated
         NotificationCenter.default.addObserver(self, selector: #selector(populateData), name: NSNotification.Name(rawValue: settingsDataNCKey), object: nil)

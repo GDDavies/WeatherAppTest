@@ -131,6 +131,7 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
                     self.newCityName = placemark?.locality
                     self.newLocation = placemark?.location
                     self.goToLocationOnMap(location: self.newLocation!)
+                           
                 }
             })
         }
