@@ -8,41 +8,49 @@
 
 import UIKit
 import Firebase
+import CoreLocation
 
 let settingsDataNCKey = "com.georgeddavies.settingsData"
 
 class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
-    
+            
     @IBOutlet weak var daysToForecastTextField: UITextField!
     @IBOutlet weak var voiceLocaleTextField: UITextField!
-    @IBOutlet weak var usersTableView: UITableView!
+    @IBOutlet weak var locationsTableView: UITableView!
     @IBOutlet weak var hourlyForecastSwitch: UISwitch!
     
-    var userArray = [Dictionary<String, Any>]()
+    var userSettingsDict = [String : Any]()
+    
+    var ref: FIRDatabaseReference!
+    private var databaseHandle: FIRDatabaseHandle!
+    var locationsArray = [CLLocation]()
+    var selectedLocation: CLLocation?
+    var cityNamesArray = [String]()
+    var selectedCityName: String?
+    
     let defaults = UserDefaults.standard
-    var selectedUserIndex = IndexPath(row: 0, section: 0)
     
     var localeOptions = ["en-GB", "en-AU", "en-IE", "en-US", "en-ZA"]
-    
-    @IBAction func addUserButton(_ sender: UIBarButtonItem) {
-        addUser(sender: sender)
-    }
-    
+        
     @IBAction func saveSettingsButton(_ sender: UIBarButtonItem) {
         if daysToForecastTextField.text != "" {
-            userArray[selectedUserIndex.row]["daysToForecast"] = Int(daysToForecastTextField.text!)
+            userSettingsDict["daysToForecast"] = Int(daysToForecastTextField.text!)
         }
-        userArray[selectedUserIndex.row]["locale"] = voiceLocaleTextField.text
+        userSettingsDict["locale"] = voiceLocaleTextField.text
         
         if hourlyForecastSwitch.isOn {
-            userArray[selectedUserIndex.row]["hourlyForecast"] = true
+            userSettingsDict["hourlyForecast"] = true
         } else {
-            userArray[selectedUserIndex.row]["hourlyForecast"] = false
+            userSettingsDict["hourlyForecast"] = false
         }
-        
-        self.defaults.set(self.userArray, forKey: "Users")
+        self.defaults.set(self.userSettingsDict, forKey: AuthenticationManager.sharedInstance.userId!)
         self.defaults.synchronize()
+        
         NotificationCenter.default.post(name: Notification.Name(rawValue: settingsDataNCKey), object: self)
+ 
+        WeatherData.sharedInstance.weatherLocation = selectedLocation
+        WeatherData.sharedInstance.getWeatherData()
+    
         dismiss(animated: true, completion: nil)
     }
     
@@ -60,8 +68,10 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        populateUsers()
+        getUserSettings()
         setUpViewController()
+        ref = FIRDatabase.database().reference()
+        populateLocationsArray()
         populateTextFields()
         
         let pickerView = UIPickerView()
@@ -79,6 +89,9 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         toolBar.isUserInteractionEnabled = true
         voiceLocaleTextField.inputView = pickerView
         voiceLocaleTextField.inputAccessoryView = toolBar
+        
+        
+        setDefaultUserSettings()
     }
     
     func donePicker() {
@@ -87,79 +100,66 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     
     func setUpViewController() {
         navigationController?.navigationBar.barTintColor = themeColour
-        self.usersTableView.allowsMultipleSelection = false
-        usersTableView.selectRow(at: selectedUserIndex, animated: false, scrollPosition: .top)
-        userArray[selectedUserIndex.row]["isSelected"] = true
+        self.locationsTableView.allowsMultipleSelection = false
+        //locationsTableView.selectRow(at: selectedUserIndex, animated: false, scrollPosition: .top)
         daysToForecastTextField.tag = 0
     }
     
     // Save default user to user array with default values
-    func addDefaultUser() {
-        let userDict = ["username": "Default User",
-                        "daysToForecast": 10,
-                        "locale": "en-GB",
-                        "isSelected": true,
-                        "hourlyForecast": false
-            ] as [String : Any]
-        self.userArray.append(userDict)
-        self.defaults.set(self.userArray, forKey: "Users")
-        self.defaults.synchronize()
-        self.usersTableView.reloadData()
-    }
-    
-    func populateUsers() {
-        var numOfSelectedUsers = 0
+
+    func getUserSettings() {
         for element in UserDefaults.standard.dictionaryRepresentation() {
-            if element.key == "Users" {
-                var i = 0
-                // Loop through users
-                for user in element.value as! Array<[String:Any]> {
-                    // Add user to array of users
-                    userArray.append(user)
-                    // Check if user is selected
-                    if user["isSelected"] as? Bool == true {
-                        // If user is selected, save IndexPath
-                        numOfSelectedUsers = 1
-                        selectedUserIndex = IndexPath(row: i, section: 0)
-                    }
-                    i += 1
-                }
+            if element.key == AuthenticationManager.sharedInstance.userId! {
+                // Assign user to user dictionary
+                userSettingsDict = element.value as! [String : Any]
+            } else {
+                // If no matching users exist, add default settings to current user
+                setDefaultUserSettings()
             }
         }
-        // If no users exist, add default user
-        if userArray.count == 0 {
-            addDefaultUser()
-        }
+    }
+    
+    func populateLocationsArray() {
         
-        // If no users are selected then select first user
-        if numOfSelectedUsers == 0 {
-            selectedUserIndex = IndexPath(row: 0, section: 0)
-            userArray[selectedUserIndex.row]["isSelected"] = true
-            self.defaults.set(self.userArray, forKey: "Users")
-            self.defaults.synchronize()
-        }
-        usersTableView.reloadData()
+        // Download locations from Firebase that are associated with the signed in user
+        
+        locationsArray.removeAll()
+        databaseHandle = ref.child("locations").observe(.childAdded, with: { (snapshot) -> Void in
+            if let value = snapshot.value as? [String : Any] {
+                value.forEach( { (name, loc) in
+                    // Selected city = Name
+                    let locDict = loc as? [String : Double]
+                    if let latitude = locDict?["locationLatitude"] {
+                        if let longitude = locDict?["locationLongitude"] {
+                            self.cityNamesArray.append(name)
+                            let location = CLLocation(latitude: latitude, longitude: longitude)
+                            self.locationsArray.append(location)
+                        }
+                    }
+                })
+                self.locationsTableView.reloadData()
+            }
+        })
     }
     
     func populateTextFields() {
-        let days = userArray[selectedUserIndex.row]["daysToForecast"] as? Int
-        let savedLocale = userArray[selectedUserIndex.row]["locale"] as? String
-        let hourly = userArray[selectedUserIndex.row]["hourlyForecast"] as? Bool
+        if let days = userSettingsDict["daysToForecast"] as? Int {
+            daysToForecastTextField.text = String(describing: days)
+        }
+        if let savedLocale = userSettingsDict["locale"] as? String {
+            voiceLocaleTextField.text = savedLocale
+        }
+        if let hourly = userSettingsDict["hourlyForecast"] as? Bool {
+            hourlyForecastSwitch.isOn = hourly
 
-        daysToForecastTextField.text = String(describing: days!)
-        voiceLocaleTextField.text = savedLocale!
-        hourlyForecastSwitch.isOn = hourly!
-    }
-    
-    func addUser(sender: UIBarButtonItem) {
-        displayPopUp(title: "Add User", message: "Enter the new user's name below", placeHolder: "e.g. Matt", type: "Save")
+        }
     }
     
     // Make sure number of days is <= 16
     func daysToForecastIsValid(settingsArray: Array<String>) -> Bool {
         let days = Int(settingsArray[0])
         if days! > 16 {
-            displayPopUp(title: "Invalid days to forecast", message: "Please enter a number up to and including 16", placeHolder: "", type: "Standard")
+            displayPopUp(title: "Invalid days to forecast", message: "Please enter a number up to and including 16", placeHolder: "")
             return false
         }
         return true
@@ -170,7 +170,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
-            return "Users"
+            return "Saved Locations"
         }
         return ""
     }
@@ -184,34 +184,27 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return userArray.count
+        return locationsArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
-        if let username = userArray[indexPath.row]["username"] {
-            cell.textLabel?.text = String(describing: username)
-        }
+        
+        cell.textLabel?.text = cityNamesArray[indexPath.row]
+        
         cell.accessoryType = cell.isSelected ? .checkmark : .none
+
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        usersTableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        selectedUserIndex = indexPath
-        saveIsUserSelected(userIndexPath: indexPath, isSelected: true)
-        populateTextFields()
+        locationsTableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        selectedLocation = locationsArray[indexPath.row]
+        selectedCityName = cityNamesArray[indexPath.row]
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        usersTableView.cellForRow(at: indexPath)?.accessoryType = .none
-        saveIsUserSelected(userIndexPath: indexPath, isSelected: false)
-    }
-    
-    func saveIsUserSelected(userIndexPath: IndexPath, isSelected: Bool) {
-        userArray[userIndexPath.row]["isSelected"] = isSelected
-        self.defaults.set(self.userArray, forKey: "Users")
-        self.defaults.synchronize()
+        locationsTableView.cellForRow(at: indexPath)?.accessoryType = .none
     }
     
     // MARK: - Textfield methods
@@ -229,43 +222,18 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         return false
     }
     
-    // MARK: - Reusable popup view
-    
-    func displayPopUp(title: String, message: String, placeHolder: String, type: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        if type == "Save" {
-            alert.addTextField { (textField) in
-                textField.placeholder = placeHolder
-            }
-            alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [weak alert] (_) in
-                let textFieldText = alert?.textFields![0].text
-                
-                let userDict = ["username": textFieldText!,
-                                "daysToForecast": 10,
-                                "locale": "en-GB",
-                                "isSelected": true,
-                                "hourlyForecast": false
-                    ] as [String : Any]
-                self.userArray.append(userDict)
-                self.defaults.set(self.userArray, forKey: "Users")
-                self.defaults.synchronize()
-                self.usersTableView.reloadData()
-                self.usersTableView.selectRow(at: self.selectedUserIndex, animated: false, scrollPosition: .top)
-            }))
-        
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
-                self.dismiss(animated: true, completion: {
-                })
-            }))
-        } else {
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-                self.dismiss(animated: true, completion: {
-                })
-            }))
-        }
-        
-        self.present(alert, animated: true, completion: nil)
+    func setDefaultUserSettings() {
+        let userDict = ["userId": AuthenticationManager.sharedInstance.userId!,
+                        "daysToForecast": 10,
+                        "locale": "en-GB",
+                        "isSelected": true,
+                        "hourlyForecast": false
+            ] as [String : Any]
+        self.defaults.set(userDict, forKey: AuthenticationManager.sharedInstance.userId!)
+        self.defaults.synchronize()
+        self.locationsTableView.reloadData()
+        //self.locationsTableView.selectRow(at: self.selectedUserIndex, animated: false, scrollPosition: .top)
+
     }
     
     // MARK: - Picker methods
@@ -285,4 +253,36 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         voiceLocaleTextField.text = localeOptions[row]
     }
+    
+    // MARK: - Reusable popup
+    func displayPopUp(title: String, message: String, placeHolder: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+            self.dismiss(animated: true, completion: {
+            })
+        }))
+    
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
+            self.dismiss(animated: true, completion: {
+            })
+        }))
+    
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: - Navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowWeatherCollectionVC" {
+            
+        }
+    }
+    
+//    override func unwind(for unwindSegue: UIStoryboardSegue, towardsViewController subsequentVC: UIViewController) {
+//        <#code#>
+//    }
+//    
+//    override func performSegue(withIdentifier identifier: String, sender: Any?) {
+//        <#code#>
+//    }
 }

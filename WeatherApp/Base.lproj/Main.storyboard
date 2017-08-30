@@ -129,7 +129,7 @@
                         <barButtonItem key="leftBarButtonItem" image="settings" id="wUu-rM-SjJ">
                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
-                                <segue destination="gfD-wQ-fRv" kind="presentation" id="krQ-KE-nuo"/>
+                                <segue destination="gfD-wQ-fRv" kind="presentation" identifier="showSettingsVC" id="krQ-KE-nuo"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="map" id="hgS-WK-sS4">
@@ -152,7 +152,7 @@
         <!--Settings-->
         <scene sceneID="wVg-MV-fvw">
             <objects>
-                <viewController id="xZk-Fa-og9" customClass="SettingsVC" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="settingsVC" id="xZk-Fa-og9" customClass="SettingsVC" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="yd4-j5-4G5"/>
                         <viewControllerLayoutGuide type="bottom" id="N62-px-POA"/>
@@ -258,23 +258,20 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="aax-hv-HmM">
-                        <barButtonItem key="leftBarButtonItem" systemItem="save" id="z4w-OH-DaD">
-                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="saveSettingsButton:" destination="xZk-Fa-og9" id="9o3-FF-Q87"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="xMs-WX-f2p">
-                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="addUserButton:" destination="xZk-Fa-og9" id="jtp-Uv-dIY"/>
-                            </connections>
-                        </barButtonItem>
+                        <leftBarButtonItems>
+                            <barButtonItem id="cwC-VS-8Dg"/>
+                            <barButtonItem systemItem="save" id="z4w-OH-DaD">
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="saveSettingsButton:" destination="xZk-Fa-og9" id="9o3-FF-Q87"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="daysToForecastTextField" destination="Jjp-se-vv8" id="HWc-XE-P16"/>
                         <outlet property="hourlyForecastSwitch" destination="wwN-vK-9A1" id="s71-Ok-31B"/>
-                        <outlet property="usersTableView" destination="kn6-hA-g3k" id="Ul2-R4-Pbg"/>
+                        <outlet property="locationsTableView" destination="kn6-hA-g3k" id="blI-ee-P5W"/>
                         <outlet property="voiceLocaleTextField" destination="0AM-db-FDz" id="b9b-B9-P4C"/>
                         <segue destination="gGe-4c-Ymb" kind="unwind" identifier="UnwindToStartingVC" unwindAction="prepareForUnwindWithSegue:" id="82V-4O-T2q"/>
                     </connections>
