@@ -50,6 +50,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         findLocation()
         loadingScreenViews()
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
+        audioToMainSpeaker()
         
         navigationController?.navigationBar.tintColor = UIColor.white
         
@@ -353,6 +354,16 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         let synthesizer = AVSpeechSynthesizer()
         synthesizer.speak(utterance)
         selectedIndex = index
+    }
+    
+    func audioToMainSpeaker() {
+        let audioSession = AVAudioSession.sharedInstance()
+        
+        do {
+            try audioSession.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
+        } catch let error as NSError {
+            print("audioSession error: \(error.localizedDescription)")
+        }
     }
 }
 
