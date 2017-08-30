@@ -50,6 +50,13 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
             }
         }
     }
+    
+    @IBAction func unwindFromSettings(sender: UIStoryboardSegue) {
+        if let origin = sender.source as? SettingsVC {
+            newLocation = origin.selectedLocation
+            newCityName = origin.selectedCityName
+        }
+    }
         
     override func viewDidLoad() {
         super.viewDidLoad()

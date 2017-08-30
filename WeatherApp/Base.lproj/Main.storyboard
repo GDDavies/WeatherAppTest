@@ -259,10 +259,17 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="aax-hv-HmM">
+                        <barButtonItem key="leftBarButtonItem" image="back" id="lnK-sJ-r6S">
+                            <inset key="imageInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <segue destination="gGe-4c-Ymb" kind="unwind" unwindAction="unwindFromSettingsWithSender:" id="506-cj-hRc"/>
+                            </connections>
+                        </barButtonItem>
                         <rightBarButtonItems>
                             <barButtonItem id="cwC-VS-8Dg">
                                 <connections>
-                                    <action selector="saveSettingsButton:" destination="xZk-Fa-og9" id="HRb-DB-Njb"/>
+                                    <action selector="saveSettingsButton:" destination="xZk-Fa-og9" id="YED-QR-k0U"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem systemItem="save" id="z4w-OH-DaD">
@@ -278,7 +285,6 @@
                         <outlet property="hourlyForecastSwitch" destination="wwN-vK-9A1" id="s71-Ok-31B"/>
                         <outlet property="locationsTableView" destination="kn6-hA-g3k" id="blI-ee-P5W"/>
                         <outlet property="voiceLocaleTextField" destination="0AM-db-FDz" id="b9b-B9-P4C"/>
-                        <segue destination="gGe-4c-Ymb" kind="unwind" identifier="UnwindToStartingVC" unwindAction="prepareForUnwindWithSegue:" id="82V-4O-T2q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="anC-9U-azk" userLabel="First Responder" sceneMemberID="firstResponder"/>
