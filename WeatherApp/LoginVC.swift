@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class LoginVC: UIViewController {
     
@@ -14,7 +15,29 @@ class LoginVC: UIViewController {
     @IBOutlet weak var passwordField: UITextField!
     
     @IBAction func didTapLogin(sender: UIButton) {
-        self.performSegue(withIdentifier: "ShowWeatherFromLogin", sender: self)
+        guard let email = emailField.text, let password = passwordField.text, email.characters.count > 0, password.characters.count > 0 else {
+            self.showAlert(message: "Enter an email and a password.")
+            return
+        }
+        
+        FIRAuth.auth()?.signIn(withEmail: email, password: password) { (user, error) in
+            if let error = error {
+                if error._code == FIRAuthErrorCode.errorCodeUserNotFound.rawValue {
+                    self.showAlert(message: "There are no users with the specified account.")
+                } else if error._code == FIRAuthErrorCode.errorCodeWrongPassword.rawValue {
+                    self.showAlert(message: "Incorrect username or password.")
+                } else {
+                    self.showAlert(message: "Error: \(error.localizedDescription)")
+                }
+                print(error.localizedDescription)
+                return
+            }
+            
+            if let user = user {
+                AuthenticationManager.sharedInstance.didLogIn(user: user)
+                self.performSegue(withIdentifier: "ShowWeatherFromLogin", sender: nil)
+            }
+        }
     }
 
     override func viewDidLoad() {
@@ -26,6 +49,12 @@ class LoginVC: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func showAlert(message: String) {
+        let alertController = UIAlertController(title: "iChat", message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
     
 
