@@ -30,7 +30,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     
     var daysCount: Int?
     var voiceLocale: String?
-    var isHourly: Bool?
+    var isHourly = false
     
     let dateFormatter = DateFormatter()
     
@@ -60,7 +60,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
         audioToMainSpeaker()
         
-        isHourly = userSettingsDict["hourlyForecast"] as? Bool
+        isHourly = userSettingsDict["hourlyForecast"] as! Bool
         
         navigationController?.navigationBar.tintColor = UIColor.white
         
@@ -124,7 +124,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         }
         daysCount = userSettingsDict["daysToForecast"] as? Int
         voiceLocale = userSettingsDict["locale"] as? String
-        isHourly = userSettingsDict["hourlyForecast"] as? Bool
+        isHourly = userSettingsDict["hourlyForecast"] as! Bool
     }
     
     // If not set default settings
@@ -141,7 +141,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     // MARK: - Populate data from API
     
     func shouldPopulateData() {
-        if !isHourly! {
+        if !isHourly {
             if daysCount != weatherCollectionView.numberOfItems(inSection: 0) {
                 animateLoadingScreenOut()
             }
@@ -179,7 +179,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     
     func populateData() {
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
-        if !isHourly! {
+        if !isHourly {
             if newLocation == nil {
                 if let start = startingLocation {
                     WeatherData.sharedInstance.getWeatherData(latitude: start.coordinate.latitude, longitude: start.coordinate.longitude)
@@ -276,7 +276,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if !isHourly! {
+        if !isHourly {
             return WeatherData.sharedInstance.weatherArray.count
         } else {
             return WeatherData.sharedInstance.hourlyWeather.count
@@ -294,7 +294,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         }
         
         // If daily forecast
-        if !isHourly! {
+        if !isHourly {
             if !WeatherData.sharedInstance.weatherArray.isEmpty {
                 if let weatherDate = WeatherData.sharedInstance.weatherArray[indexPath.row].date {
                     dateFormatter.dateFormat = dayForecastFormat
@@ -344,7 +344,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         if !shareWeatherButton.isEnabled {
             shareWeatherButton.isEnabled = true
         }
-        textToSpeech(index: indexPath, hourly: isHourly!)
+        textToSpeech(index: indexPath, hourly: isHourly)
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
