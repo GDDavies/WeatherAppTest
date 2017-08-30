@@ -9,6 +9,7 @@
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -129,7 +130,7 @@
                         <barButtonItem key="leftBarButtonItem" image="settings" id="wUu-rM-SjJ">
                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
-                                <segue destination="gfD-wQ-fRv" kind="presentation" identifier="showSettingsVC" id="krQ-KE-nuo"/>
+                                <segue destination="xZk-Fa-og9" kind="show" identifier="ShowSettingsVC" id="e6W-O3-AHY"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="map" id="hgS-WK-sS4">
@@ -258,15 +259,19 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="aax-hv-HmM">
-                        <leftBarButtonItems>
-                            <barButtonItem id="cwC-VS-8Dg"/>
+                        <rightBarButtonItems>
+                            <barButtonItem id="cwC-VS-8Dg">
+                                <connections>
+                                    <action selector="saveSettingsButton:" destination="xZk-Fa-og9" id="HRb-DB-Njb"/>
+                                </connections>
+                            </barButtonItem>
                             <barButtonItem systemItem="save" id="z4w-OH-DaD">
                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <action selector="saveSettingsButton:" destination="xZk-Fa-og9" id="9o3-FF-Q87"/>
                                 </connections>
                             </barButtonItem>
-                        </leftBarButtonItems>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="daysToForecastTextField" destination="Jjp-se-vv8" id="HWc-XE-P16"/>
@@ -366,24 +371,6 @@
                 <exit id="F3r-Oa-gHv" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="5616.8000000000002" y="-564.46776611694156"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="Nip-Ut-X4e">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gfD-wQ-fRv" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="3Jo-ln-yhO">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="xZk-Fa-og9" kind="relationship" relationship="rootViewController" id="8iV-Gp-TcK"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="aza-2y-gxp" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3738.4000000000001" y="-1225.6371814092954"/>
         </scene>
         <!--WeatherApp-->
         <scene sceneID="Ygm-q0-Vi6">
@@ -532,11 +519,11 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fTM-Yd-Oy1" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="RtA-7z-tHj">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="RtA-7z-tHj">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="barTintColor" red="0.16078431372549018" green="0.50196078431372548" blue="0.72549019607843135" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="barTintColor" red="0.1915629506111145" green="0.57709199190139771" blue="0.77691489458084106" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </textAttributes>
@@ -622,7 +609,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yF3-UH-X5c" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="YWK-I3-5Bf">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="YWK-I3-5Bf">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" red="0.1915629506111145" green="0.57709199190139771" blue="0.77691489458084106" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

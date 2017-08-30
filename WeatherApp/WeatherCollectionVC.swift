@@ -25,6 +25,13 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     fileprivate let dayForecastFormat = "d MMM"
     fileprivate let hourlyForecastFormat = "d MMM - h:mm a"
     
+    var userSettingsDict = [String : Any]()
+    let defaults = UserDefaults.standard
+    
+    var daysCount: Int?
+    var voiceLocale: String?
+    var isHourly: Bool?
+    
     let dateFormatter = DateFormatter()
     
     fileprivate let locationManager = CLLocationManager()
@@ -47,10 +54,13 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     override func viewDidLoad() {
         super.viewDidLoad()
         mainViewSetup()
+        getUserSettings()
         findLocation()
         loadingScreenViews()
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
         audioToMainSpeaker()
+        
+        isHourly = userSettingsDict["hourlyForecast"] as? Bool
         
         navigationController?.navigationBar.tintColor = UIColor.white
         
@@ -60,6 +70,11 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         // Notification observers for when json data is successfully loaded
         NotificationCenter.default.addObserver(self, selector: #selector(shouldPopulateData), name: NSNotification.Name(rawValue: weatherDataNCKey), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(shouldPopulateData), name: NSNotification.Name(rawValue: hourlyDataNCKey), object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        getUserSettings()
+        shouldPopulateData()
     }
     
     // MARK: - Setup views
@@ -93,15 +108,46 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         view.addSubview(myActivityIndicator)
     }
     
+    // Check if user exists
+    func getUserSettings() {
+        var foundUser = false
+        for element in UserDefaults.standard.dictionaryRepresentation() {
+            if element.key == AuthenticationManager.sharedInstance.userId! {
+                // Assign user to user dictionary
+                userSettingsDict = element.value as! [String : Any]
+                foundUser = true
+            }
+        }
+        if !foundUser {
+            // If no matching users exist, add default settings to current user
+            setDefaultUserSettings()
+        }
+        daysCount = userSettingsDict["daysToForecast"] as? Int
+        voiceLocale = userSettingsDict["locale"] as? String
+        isHourly = userSettingsDict["hourlyForecast"] as? Bool
+    }
+    
+    // If not set default settings
+    func setDefaultUserSettings() {
+        let userDict = ["userId": AuthenticationManager.sharedInstance.userId!,
+                        "daysToForecast": 10,
+                        "locale": "en-GB",
+                        "hourlyForecast": false
+            ] as [String : Any]
+        self.defaults.set(userDict, forKey: AuthenticationManager.sharedInstance.userId!)
+        self.defaults.synchronize()
+    }
+    
     // MARK: - Populate data from API
     
     func shouldPopulateData() {
-        if !WeatherData.sharedInstance.hourlyForecast {
-            if WeatherData.sharedInstance.daysCount != weatherCollectionView.numberOfItems(inSection: 0) {
+        if !isHourly! {
+            if daysCount != weatherCollectionView.numberOfItems(inSection: 0) {
                 animateLoadingScreenOut()
             }
             updateLocationNameIfChanged()
         } else {
+            print(WeatherData.sharedInstance.hourlyWeather.count)
             if WeatherData.sharedInstance.hourlyWeather.count != weatherCollectionView.numberOfItems(inSection: 0) {
                 animateLoadingScreenOut()
             }
@@ -133,7 +179,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     
     func populateData() {
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
-        if !WeatherData.sharedInstance.hourlyForecast {
+        if !isHourly! {
             if newLocation == nil {
                 if let start = startingLocation {
                     WeatherData.sharedInstance.getWeatherData(latitude: start.coordinate.latitude, longitude: start.coordinate.longitude)
@@ -196,10 +242,10 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
     
     func updateCollectionViewLabels() {
         if let cityName = newCityName {
-            WeatherData.sharedInstance.city = cityName
+            WeatherData.sharedInstance.forecastCity = cityName
             cityNameLabel.text = cityName
         } else {
-            cityNameLabel.text = WeatherData.sharedInstance.city
+            cityNameLabel.text = WeatherData.sharedInstance.forecastCity
         }
         weatherCollectionView.reloadData()
     }
@@ -208,9 +254,16 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print(9)
         if segue.identifier == "ShowMapView" {
             if let destinationVC = segue.destination as? MapViewVC {
                 destinationVC.location = locationManager.location
+            }
+        }
+        if segue.identifier == "ShowSettingsVC" {
+            if let destinationVC = segue.destination as? SettingsVC {
+                print(7)
+                destinationVC.userSettingsDict = userSettingsDict
             }
         }
     }
@@ -223,7 +276,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if !WeatherData.sharedInstance.hourlyForecast {
+        if !isHourly! {
             return WeatherData.sharedInstance.weatherArray.count
         } else {
             return WeatherData.sharedInstance.hourlyWeather.count
@@ -241,7 +294,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         }
         
         // If daily forecast
-        if !WeatherData.sharedInstance.hourlyForecast {
+        if !isHourly! {
             if !WeatherData.sharedInstance.weatherArray.isEmpty {
                 if let weatherDate = WeatherData.sharedInstance.weatherArray[indexPath.row].date {
                     dateFormatter.dateFormat = dayForecastFormat
@@ -291,7 +344,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         if !shareWeatherButton.isEnabled {
             shareWeatherButton.isEnabled = true
         }
-        textToSpeech(index: indexPath, hourly: WeatherData.sharedInstance.hourlyForecast)
+        textToSpeech(index: indexPath, hourly: isHourly!)
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -350,7 +403,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
             }
         }
         let utterance = AVSpeechUtterance(string: textToSpeak)
-        utterance.voice = AVSpeechSynthesisVoice(language: WeatherData.sharedInstance.voiceLocale)
+        utterance.voice = AVSpeechSynthesisVoice(language: voiceLocale)
         let synthesizer = AVSpeechSynthesizer()
         synthesizer.speak(utterance)
         selectedIndex = index

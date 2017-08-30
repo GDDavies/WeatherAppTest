@@ -17,10 +17,10 @@ class WeatherData: NSObject {
     static let sharedInstance = WeatherData()
     var weatherArray = [DayWeather]()
     var hourlyWeather = [HourWeather]()
-    var daysCount = 10
-    var voiceLocale = "en-GB"
-    var city = "London, UK"
-    var hourlyForecast = false
+    var daysToForecast = 10
+    var voiceSpeechLocale = "en-GB"
+    var forecastCity = ""
+    var isHourlyForecast = false
     
     fileprivate let apiKey = "ff3516b24bf01703355151a3ba0addc9"
     
@@ -28,7 +28,7 @@ class WeatherData: NSObject {
         
         getLocaleAndDaysToForecast()
         
-        let url = URL(string: "http://api.openweathermap.org/data/2.5/forecast/daily?lat=\(latitude)&lon=\(longitude)&cnt=\(String(describing: daysCount))&appid=\(apiKey)")
+        let url = URL(string: "http://api.openweathermap.org/data/2.5/forecast/daily?lat=\(latitude)&lon=\(longitude)&cnt=\(String(describing: daysToForecast))&appid=\(apiKey)")
         
         let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
             DispatchQueue.main.async(execute: {
@@ -51,14 +51,14 @@ class WeatherData: NSObject {
             
             if let cityData = json["city"] as? Dictionary<String, AnyObject> {
                 if let cityName = cityData["name"] as? String {
-                    city = cityName
+                    forecastCity = cityName
                 }
             }
             
             if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
                 for forecast in forecastData {
                     let weatherForecast = DayWeather()
-                    weatherForecast.city = city
+                    weatherForecast.city = forecastCity
                     
                     let epochTime = forecast["dt"] as? Int
                     let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))
@@ -84,14 +84,12 @@ class WeatherData: NSObject {
     
     func getLocaleAndDaysToForecast() {
         for element in UserDefaults.standard.dictionaryRepresentation() {
-            if element.key == "Users" {
-                for user in element.value as! Array<[String:Any]> {
-                    if user["isSelected"] as? Bool == true {
-                        voiceLocale = user["locale"] as! String
-                        daysCount = user["daysToForecast"] as! Int
-                        hourlyForecast = user["hourlyForecast"] as! Bool
-                    }
-                }
+            if element.key == AuthenticationManager.sharedInstance.userId! {
+                // Assign user to user dictionary
+                let userSettingsDict = element.value as! [String : Any]
+                voiceSpeechLocale = userSettingsDict["locale"] as! String
+                daysToForecast = userSettingsDict["daysToForecast"] as! Int
+                isHourlyForecast = userSettingsDict["hourlyForecast"] as! Bool
             }
         }
     }
@@ -99,6 +97,7 @@ class WeatherData: NSObject {
     func getHourlyForecast(latitude: Double, longitude: Double) {
                 
         let url = URL(string: "http://api.openweathermap.org/data/2.5/forecast?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)")
+        print("got hourly")
         
         let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
             DispatchQueue.main.async(execute: {
@@ -122,7 +121,7 @@ class WeatherData: NSObject {
             if let forecastData = json["list"] as? [Dictionary<String, AnyObject>] {
                 for forecast in forecastData {
                     let hourlyForecastData = HourWeather()
-                    hourlyForecastData.city = city
+                    hourlyForecastData.city = forecastCity
                     
                     let epochTime = forecast["dt"] as? Int
                     let date = Date(timeIntervalSince1970: TimeInterval(epochTime!))

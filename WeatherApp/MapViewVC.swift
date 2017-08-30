@@ -145,9 +145,7 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
-            self.dismiss(animated: true, completion: { 
-                print("Cancel")
-            })
+
         }))
         
         self.present(alert, animated: true, completion: nil)

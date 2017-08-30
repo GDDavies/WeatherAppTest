@@ -33,25 +33,26 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     var localeOptions = ["en-GB", "en-AU", "en-IE", "en-US", "en-ZA"]
         
     @IBAction func saveSettingsButton(_ sender: UIBarButtonItem) {
+        
+        var userDict = [String : Any]()
+        
         if daysToForecastTextField.text != "" {
-            userSettingsDict["daysToForecast"] = Int(daysToForecastTextField.text!)
+            userDict["daysToForecast"] = Int(daysToForecastTextField.text!)
         }
-        userSettingsDict["locale"] = voiceLocaleTextField.text
+        userDict["locale"] = voiceLocaleTextField.text
         
         if hourlyForecastSwitch.isOn {
-            userSettingsDict["hourlyForecast"] = true
+            userDict["hourlyForecast"] = true
         } else {
-            userSettingsDict["hourlyForecast"] = false
+            userDict["hourlyForecast"] = false
         }
-        self.defaults.set(self.userSettingsDict, forKey: AuthenticationManager.sharedInstance.userId!)
+        
+        //userDict["userID"] = AuthenticationManager.sharedInstance.userId!
+        
+        self.defaults.set(userDict, forKey: AuthenticationManager.sharedInstance.userId!)
         self.defaults.synchronize()
         
-        NotificationCenter.default.post(name: Notification.Name(rawValue: settingsDataNCKey), object: self)
- 
-        WeatherData.sharedInstance.weatherLocation = selectedLocation
-        WeatherData.sharedInstance.getWeatherData()
-    
-        dismiss(animated: true, completion: nil)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: settingsDataNCKey), object: self)     
     }
     
     @IBAction func logOutAction(_ sender: UIButton) {
@@ -68,7 +69,6 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        getUserSettings()
         setUpViewController()
         ref = FIRDatabase.database().reference()
         populateLocationsArray()
@@ -89,9 +89,10 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         toolBar.isUserInteractionEnabled = true
         voiceLocaleTextField.inputView = pickerView
         voiceLocaleTextField.inputAccessoryView = toolBar
-        
-        
-        setDefaultUserSettings()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        print(userSettingsDict)
     }
     
     func donePicker() {
@@ -104,21 +105,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         //locationsTableView.selectRow(at: selectedUserIndex, animated: false, scrollPosition: .top)
         daysToForecastTextField.tag = 0
     }
-    
-    // Save default user to user array with default values
-
-    func getUserSettings() {
-        for element in UserDefaults.standard.dictionaryRepresentation() {
-            if element.key == AuthenticationManager.sharedInstance.userId! {
-                // Assign user to user dictionary
-                userSettingsDict = element.value as! [String : Any]
-            } else {
-                // If no matching users exist, add default settings to current user
-                setDefaultUserSettings()
-            }
-        }
-    }
-    
+        
     func populateLocationsArray() {
         
         // Download locations from Firebase that are associated with the signed in user
@@ -220,20 +207,6 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
             return allowedCharacters.isSuperset(of: characterSet) && newLength <= 2
         }
         return false
-    }
-    
-    func setDefaultUserSettings() {
-        let userDict = ["userId": AuthenticationManager.sharedInstance.userId!,
-                        "daysToForecast": 10,
-                        "locale": "en-GB",
-                        "isSelected": true,
-                        "hourlyForecast": false
-            ] as [String : Any]
-        self.defaults.set(userDict, forKey: AuthenticationManager.sharedInstance.userId!)
-        self.defaults.synchronize()
-        self.locationsTableView.reloadData()
-        //self.locationsTableView.selectRow(at: self.selectedUserIndex, animated: false, scrollPosition: .top)
-
     }
     
     // MARK: - Picker methods
