@@ -54,7 +54,23 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         
         let pickerView = UIPickerView()
         pickerView.delegate = self
+        let toolBar = UIToolbar()
+        toolBar.barStyle = UIBarStyle.default
+        toolBar.isTranslucent = true
+        toolBar.tintColor = UIColor(red: 76/255, green: 217/255, blue: 100/255, alpha: 1)
+        toolBar.sizeToFit()
+        
+        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.plain, target: self, action: #selector(donePicker))
+        
+        doneButton.tintColor = themeColour
+        toolBar.setItems([doneButton], animated: false)
+        toolBar.isUserInteractionEnabled = true
         voiceLocaleTextField.inputView = pickerView
+        voiceLocaleTextField.inputAccessoryView = toolBar
+    }
+    
+    func donePicker() {
+        voiceLocaleTextField.resignFirstResponder()
     }
     
     func setUpViewController() {
