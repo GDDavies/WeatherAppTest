@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 let settingsDataNCKey = "com.georgeddavies.settingsData"
 
@@ -43,6 +44,17 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         self.defaults.synchronize()
         NotificationCenter.default.post(name: Notification.Name(rawValue: settingsDataNCKey), object: self)
         dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func logOutAction(_ sender: UIButton) {
+        let firebaseAuth = FIRAuth.auth()
+        do {
+            try firebaseAuth?.signOut()
+            AuthenticationManager.sharedInstance.loggedIn = false
+            self.performSegue(withIdentifier: "UnwindToStartingVC", sender: self)
+        } catch let signOutError as NSError {
+            print ("Error signing out: \(signOutError)")
+        }
     }
     
     override func viewDidLoad() {

@@ -147,7 +147,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XMF-ZM-tVl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3736.8000000000002" y="-563.56821589205401"/>
+            <point key="canvasLocation" x="4676" y="-563.56821589205401"/>
         </scene>
         <!--Settings-->
         <scene sceneID="wVg-MV-fvw">
@@ -215,6 +215,22 @@
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="wwN-vK-9A1">
                                 <rect key="frame" x="310" y="293" width="51" height="31"/>
                             </switch>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MJs-6I-Tqg">
+                                <rect key="frame" x="37.5" y="340" width="300" height="44"/>
+                                <color key="backgroundColor" red="1" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="p3p-cI-XOc"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <inset key="contentEdgeInsets" minX="32" minY="8" maxX="32" maxY="8"/>
+                                <state key="normal" title="Log Out">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="didTapSignUpWithSender:" destination="PSH-wH-egM" eventType="touchUpInside" id="mCP-Sf-jXx"/>
+                                    <action selector="logOutAction:" destination="xZk-Fa-og9" eventType="touchUpInside" id="J9m-HH-241"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -226,14 +242,17 @@
                             <constraint firstAttribute="leadingMargin" secondItem="X6c-1y-Ndb" secondAttribute="leading" id="QHU-ut-8eT"/>
                             <constraint firstAttribute="leadingMargin" secondItem="zA6-R3-wud" secondAttribute="leading" id="UQp-fF-ryE"/>
                             <constraint firstItem="X6c-1y-Ndb" firstAttribute="top" secondItem="gtd-eE-qgi" secondAttribute="bottom" constant="28" id="YXD-Ma-Xpy"/>
+                            <constraint firstItem="MJs-6I-Tqg" firstAttribute="width" secondItem="9wO-Wx-gmZ" secondAttribute="width" multiplier="0.8" id="dlT-bl-4Ca"/>
                             <constraint firstItem="Jjp-se-vv8" firstAttribute="leading" secondItem="gtd-eE-qgi" secondAttribute="trailing" constant="8" id="fFX-aP-FFh"/>
                             <constraint firstAttribute="leadingMargin" secondItem="gtd-eE-qgi" secondAttribute="leading" id="fnn-RL-BVQ"/>
+                            <constraint firstItem="MJs-6I-Tqg" firstAttribute="centerX" secondItem="9wO-Wx-gmZ" secondAttribute="centerX" id="g9b-rw-tkf"/>
                             <constraint firstItem="0AM-db-FDz" firstAttribute="width" secondItem="Jjp-se-vv8" secondAttribute="width" id="gNy-9J-WZu"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="leading" secondItem="9wO-Wx-gmZ" secondAttribute="leading" id="lBU-gs-YkQ"/>
                             <constraint firstItem="gtd-eE-qgi" firstAttribute="top" secondItem="kn6-hA-g3k" secondAttribute="bottom" constant="21" id="m65-5k-Qar"/>
                             <constraint firstItem="wwN-vK-9A1" firstAttribute="centerY" secondItem="zA6-R3-wud" secondAttribute="centerY" id="nSM-21-g9D"/>
                             <constraint firstAttribute="trailingMargin" secondItem="0AM-db-FDz" secondAttribute="trailing" id="oYX-0o-mOr"/>
                             <constraint firstItem="zA6-R3-wud" firstAttribute="top" secondItem="X6c-1y-Ndb" secondAttribute="bottom" constant="28" id="vmB-FX-MwL"/>
+                            <constraint firstItem="MJs-6I-Tqg" firstAttribute="top" secondItem="zA6-R3-wud" secondAttribute="bottom" constant="22" id="wdI-bd-7Ze"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="top" secondItem="9wO-Wx-gmZ" secondAttribute="topMargin" id="xKE-7L-sxK"/>
                             <constraint firstItem="kn6-hA-g3k" firstAttribute="width" secondItem="9wO-Wx-gmZ" secondAttribute="width" id="xTi-DR-DeF"/>
                         </constraints>
@@ -257,9 +276,11 @@
                         <outlet property="hourlyForecastSwitch" destination="wwN-vK-9A1" id="s71-Ok-31B"/>
                         <outlet property="usersTableView" destination="kn6-hA-g3k" id="Ul2-R4-Pbg"/>
                         <outlet property="voiceLocaleTextField" destination="0AM-db-FDz" id="b9b-B9-P4C"/>
+                        <segue destination="gGe-4c-Ymb" kind="unwind" identifier="UnwindToStartingVC" unwindAction="prepareForUnwindWithSegue:" id="82V-4O-T2q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="anC-9U-azk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="gGe-4c-Ymb" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="4677.6000000000004" y="-1225.6371814092954"/>
         </scene>
@@ -292,6 +313,12 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DMw-tR-MIl">
                                 <rect key="frame" x="0.0" y="559" width="375" height="44"/>
                                 <items>
+                                    <barButtonItem title="Save" id="uDf-Cp-d0q">
+                                        <color key="tintColor" red="0.1915629506111145" green="0.57709199190139771" blue="0.77691489458084106" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <connections>
+                                            <action selector="saveLocationButton:" destination="iWA-No-fKC" id="Yba-7O-2bo"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="hh8-Pe-lCf"/>
                                     <barButtonItem image="microphone" id="P4a-Cl-3Hm">
                                         <color key="tintColor" red="0.16078431369999999" green="0.50196078430000002" blue="0.72549019609999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -341,7 +368,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GSg-qb-BKE" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="F3r-Oa-gHv" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="4677.6000000000004" y="-564.46776611694156"/>
+            <point key="canvasLocation" x="5616.8000000000002" y="-564.46776611694156"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Nip-Ut-X4e">
@@ -364,7 +391,7 @@
         <!--WeatherApp-->
         <scene sceneID="Ygm-q0-Vi6">
             <objects>
-                <viewController id="NIz-th-SFE" sceneMemberID="viewController">
+                <viewController id="NIz-th-SFE" customClass="StartingVC" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="UHT-K3-SL9"/>
                         <viewControllerLayoutGuide type="bottom" id="Nto-Y0-SrG"/>
@@ -374,7 +401,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sOZ-Xw-fTH">
-                                <rect key="frame" x="56" y="291" width="263" height="44"/>
+                                <rect key="frame" x="37.5" y="291" width="300.5" height="44"/>
                                 <color key="backgroundColor" red="0.1915629506111145" green="0.57709199190139771" blue="0.77691489458084106" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="eAd-OP-URc"/>
@@ -391,7 +418,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RSj-GT-JXJ">
-                                <rect key="frame" x="56.5" y="220" width="262.5" height="44"/>
+                                <rect key="frame" x="38" y="220" width="300" height="44"/>
                                 <color key="backgroundColor" red="0.1915629506111145" green="0.57709199190139771" blue="0.77691489458084106" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="8Vc-7w-sOr"/>
@@ -414,7 +441,7 @@
                             <constraint firstItem="RSj-GT-JXJ" firstAttribute="centerX" secondItem="64x-Cd-z2H" secondAttribute="centerX" id="W5y-CQ-gas"/>
                             <constraint firstItem="sOZ-Xw-fTH" firstAttribute="top" secondItem="RSj-GT-JXJ" secondAttribute="bottom" constant="27" id="a2T-UZ-WZx"/>
                             <constraint firstItem="sOZ-Xw-fTH" firstAttribute="width" secondItem="RSj-GT-JXJ" secondAttribute="width" id="h0b-qR-EHy"/>
-                            <constraint firstItem="RSj-GT-JXJ" firstAttribute="width" secondItem="64x-Cd-z2H" secondAttribute="width" multiplier="0.7" id="iTV-lq-ULp"/>
+                            <constraint firstItem="RSj-GT-JXJ" firstAttribute="width" secondItem="64x-Cd-z2H" secondAttribute="width" multiplier="0.8" id="iTV-lq-ULp"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="WeatherApp" id="quC-Ev-ahJ"/>
@@ -496,7 +523,7 @@
                         <outlet property="emailField" destination="bne-bw-Ovk" id="mlX-h9-FAg"/>
                         <outlet property="nameField" destination="4Qp-eS-cPg" id="XFZ-42-vFL"/>
                         <outlet property="passwordField" destination="fJH-7C-qBl" id="61B-ja-Av3"/>
-                        <segue destination="DRZ-yQ-KaX" kind="show" identifier="ShowWeatherFromSignUp" id="6da-aW-v4P"/>
+                        <segue destination="yF3-UH-X5c" kind="show" identifier="ShowWeatherFromSignUp" id="6da-aW-v4P"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ACq-D0-KUs" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -508,7 +535,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fTM-Yd-Oy1" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="RtA-7z-tHj">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="RtA-7z-tHj">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -586,12 +613,31 @@
                     <connections>
                         <outlet property="emailField" destination="xnH-gS-LLD" id="32J-B5-twc"/>
                         <outlet property="passwordField" destination="77H-AO-Px6" id="Rxc-GO-RnG"/>
-                        <segue destination="DRZ-yQ-KaX" kind="show" identifier="ShowWeatherFromLogin" id="P5h-8H-DIS"/>
+                        <segue destination="yF3-UH-X5c" kind="show" identifier="ShowWeatherFromLogin" id="P5h-8H-DIS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5xB-uF-AUC" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2641" y="-917"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Ju0-YD-BrJ">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yF3-UH-X5c" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="YWK-I3-5Bf">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.1915629506111145" green="0.57709199190139771" blue="0.77691489458084106" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="DRZ-yQ-KaX" kind="relationship" relationship="rootViewController" id="VcO-Fo-2xh"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="43A-I0-VgE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3736.8000000000002" y="-563.56821589205401"/>
         </scene>
     </scenes>
     <resources>

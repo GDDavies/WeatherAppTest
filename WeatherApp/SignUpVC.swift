@@ -62,7 +62,7 @@ class SignUpVC: UIViewController {
     }
     
     func showAlert(message: String) {
-        let alertController = UIAlertController(title: "iChat", message: message, preferredStyle: .alert)
+        let alertController = UIAlertController(title: "WeatherApp", message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         present(alertController, animated: true, completion: nil)
     }

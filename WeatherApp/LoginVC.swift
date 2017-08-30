@@ -36,6 +36,8 @@ class LoginVC: UIViewController {
             if let user = user {
                 AuthenticationManager.sharedInstance.didLogIn(user: user)
                 self.performSegue(withIdentifier: "ShowWeatherFromLogin", sender: nil)
+                self.emailField.text = ""
+                self.passwordField.text = ""
             }
         }
     }
@@ -43,7 +45,8 @@ class LoginVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        emailField.text = "s@s.com"
+        passwordField.text = "123456"
     }
 
     override func didReceiveMemoryWarning() {
@@ -52,7 +55,7 @@ class LoginVC: UIViewController {
     }
     
     func showAlert(message: String) {
-        let alertController = UIAlertController(title: "iChat", message: message, preferredStyle: .alert)
+        let alertController = UIAlertController(title: "WeatherApp", message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         present(alertController, animated: true, completion: nil)
     }

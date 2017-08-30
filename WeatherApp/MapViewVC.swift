@@ -10,12 +10,17 @@ import UIKit
 import MapKit
 import CoreLocation
 import Speech
+import Firebase
 
 
 class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
 
     @IBOutlet weak var segmentedControlOutlet: UISegmentedControl!
     @IBOutlet weak var mapView: MKMapView!
+    let geoCoder = CLGeocoder()
+    
+    var ref: FIRDatabaseReference!
+    private var databaseHandle: FIRDatabaseHandle!
     
     var location: CLLocation?
     var newLocation: CLLocation?
@@ -74,7 +79,34 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
         siriButton.tintColor = UIColor.red
         speechToSearch()
     }
+
+    @IBAction func saveLocationButton(_ sender: UIBarButtonItem) {
+        if let loc = newLocation {
+            saveToFirebase(locName: newCityName!, loc: loc)
+            
+        } else if let loc = location {
+            var addressCity: String?
+            geoCoder.reverseGeocodeLocation(loc, completionHandler: { placemarks, error in
+                guard let addressDict = placemarks?[0].addressDictionary else {
+                    assert(false)
+                }
+                addressCity = addressDict["City"] as? String
+                if let city = addressCity {
+                    self.saveToFirebase(locName: city, loc: loc)
+                }
+            })
+        }
+    }
     
+    func saveToFirebase(locName: String, loc: CLLocation) {
+        let userLocationsRef = ref.child("locations").child(AuthenticationManager.sharedInstance.userId!).child(locName)
+        let location = [
+            "locationLatitude": loc.coordinate.latitude,
+            "locationLongitude": loc.coordinate.longitude
+        ] as [String : Any]
+        userLocationsRef.setValue(location)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.segmentedControlOutlet.tintColor = themeColour
@@ -83,6 +115,7 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
             goToLocationOnMap(location: startLocation)
         }
         requestSpeechAuthorization()
+        ref = FIRDatabase.database().reference()
     }
 
     // MARK: - Location methods
@@ -122,8 +155,7 @@ class MapViewVC: UIViewController, SFSpeechRecognizerDelegate {
     
     func searchForLocation(text: String?) {
         if let cityName = text {
-            let geocoder = CLGeocoder()
-            geocoder.geocodeAddressString(cityName, completionHandler: { (placemarks, error) -> Void in
+            geoCoder.geocodeAddressString(cityName, completionHandler: { (placemarks, error) -> Void in
                 if let err = error {
                     print(err)
                 } else if (placemarks?[0]) != nil {
