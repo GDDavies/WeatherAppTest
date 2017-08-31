@@ -97,7 +97,6 @@ class WeatherData: NSObject {
     func getHourlyForecast(latitude: Double, longitude: Double) {
                 
         let url = URL(string: "http://api.openweathermap.org/data/2.5/forecast?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)")
-        print("got hourly")
         
         let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
             DispatchQueue.main.async(execute: {

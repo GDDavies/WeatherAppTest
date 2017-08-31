@@ -32,7 +32,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     
     var localeOptions = ["en-GB", "en-AU", "en-IE", "en-US", "en-ZA"]
         
-    @IBAction func saveSettingsButton(_ sender: UIBarButtonItem) {
+    @IBAction func saveSettingsButton(_ sender: UIButton) {
         
         var userDict = [String : Any]()
         
@@ -55,7 +55,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         NotificationCenter.default.post(name: Notification.Name(rawValue: settingsDataNCKey), object: self)     
     }
     
-    @IBAction func logOutAction(_ sender: UIButton) {
+    @IBAction func logOutAction(_ sender: UIBarButtonItem) {
         let firebaseAuth = FIRAuth.auth()
         do {
             try firebaseAuth?.signOut()
@@ -91,10 +91,6 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         voiceLocaleTextField.inputAccessoryView = toolBar
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        print(userSettingsDict)
-    }
-    
     func donePicker() {
         voiceLocaleTextField.resignFirstResponder()
     }
@@ -107,21 +103,22 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     }
         
     func populateLocationsArray() {
-        
         // Download locations from Firebase that are associated with the signed in user
-        
         locationsArray.removeAll()
-        databaseHandle = ref.child("locations").observe(.childAdded, with: { (snapshot) -> Void in
+        databaseHandle = ref.child("locations").observe(.value, with: { (snapshot) -> Void in
             if let value = snapshot.value as? [String : Any] {
-                value.forEach( { (name, loc) in
-                    // Selected city = Name
-                    let locDict = loc as? [String : Double]
-                    if let latitude = locDict?["locationLatitude"] {
-                        if let longitude = locDict?["locationLongitude"] {
-                            self.cityNamesArray.append(name)
-                            let location = CLLocation(latitude: latitude, longitude: longitude)
-                            self.locationsArray.append(location)
-                        }
+                value.forEach( { (user, data) in
+                    if user == AuthenticationManager.sharedInstance.userId! {
+                        (data as? [String : Any])?.forEach( { (city, forecast) in
+                            let locDict = forecast as? [String : Double]
+                            if let latitude = locDict?["locationLatitude"] {
+                                if let longitude = locDict?["locationLongitude"] {
+                                    self.cityNamesArray.append(city)
+                                    let location = CLLocation(latitude: latitude, longitude: longitude)
+                                    self.locationsArray.append(location)
+                                }
+                            }
+                        })
                     }
                 })
                 self.locationsTableView.reloadData()

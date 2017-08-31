@@ -67,7 +67,9 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         WeatherData.sharedInstance.getLocaleAndDaysToForecast()
         audioToMainSpeaker()
         
-        isHourly = userSettingsDict["hourlyForecast"] as! Bool
+        if let hourly = userSettingsDict["hourlyForecast"] as? Bool {
+            isHourly = hourly
+        }
         
         navigationController?.navigationBar.tintColor = UIColor.white
         
@@ -131,7 +133,9 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         }
         daysCount = userSettingsDict["daysToForecast"] as? Int
         voiceLocale = userSettingsDict["locale"] as? String
-        isHourly = userSettingsDict["hourlyForecast"] as! Bool
+        if let hourly = userSettingsDict["hourlyForecast"] as? Bool{
+            isHourly = hourly
+        }
     }
     
     // If not set default settings
@@ -154,7 +158,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
             }
             updateLocationNameIfChanged()
         } else {
-            print(WeatherData.sharedInstance.hourlyWeather.count)
             if WeatherData.sharedInstance.hourlyWeather.count != weatherCollectionView.numberOfItems(inSection: 0) {
                 animateLoadingScreenOut()
             }
