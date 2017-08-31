@@ -262,14 +262,14 @@
                             <inset key="imageInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
-                                <segue destination="gGe-4c-Ymb" kind="unwind" unwindAction="unwindFromSettingsWithSender:" id="506-cj-hRc"/>
+                                <segue destination="gGe-4c-Ymb" kind="unwind" unwindAction="unwindFromSettingsWithSender:" id="QPw-CD-8a5"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Log Out" id="z4w-OH-DaD">
                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="logOutAction:" destination="xZk-Fa-og9" id="esq-N0-Clv"/>
-                                <segue destination="gGe-4c-Ymb" kind="unwind" unwindAction="prepareForUnwindWithSegue:" id="3iQ-sY-zI8"/>
+                                <segue destination="gGe-4c-Ymb" kind="unwind" identifier="UnwindToStart" unwindAction="prepareForUnwindWithSegue:" id="a15-Gr-lb3"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -521,7 +521,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="RtA-7z-tHj">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <color key="barTintColor" red="0.1915629506111145" green="0.57709199190139771" blue="0.77691489458084106" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

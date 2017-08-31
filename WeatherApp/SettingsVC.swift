@@ -47,8 +47,6 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
             userDict["hourlyForecast"] = false
         }
         
-        //userDict["userID"] = AuthenticationManager.sharedInstance.userId!
-        
         self.defaults.set(userDict, forKey: AuthenticationManager.sharedInstance.userId!)
         self.defaults.synchronize()
         
@@ -60,7 +58,7 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         do {
             try firebaseAuth?.signOut()
             AuthenticationManager.sharedInstance.loggedIn = false
-            self.performSegue(withIdentifier: "UnwindToStartingVC", sender: self)
+            //self.performSegue(withIdentifier: "UnwindToStartingVC", sender: self)
         } catch let signOutError as NSError {
             print ("Error signing out: \(signOutError)")
         }
@@ -243,16 +241,8 @@ class SettingsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ShowWeatherCollectionVC" {
-            
+        if segue.identifier == "UnwindToStart" {
+            NotificationCenter.default.post(name: Notification.Name(rawValue: logOutNCKey), object: self)
         }
     }
-    
-//    override func unwind(for unwindSegue: UIStoryboardSegue, towardsViewController subsequentVC: UIViewController) {
-//        <#code#>
-//    }
-//    
-//    override func performSegue(withIdentifier identifier: String, sender: Any?) {
-//        <#code#>
-//    }
 }

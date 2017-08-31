@@ -11,6 +11,7 @@ import CoreLocation
 import AVFoundation
 
 let themeColour = UIColor(red: 41/255, green: 128/255, blue: 185/255, alpha: 1.0)
+let logOutNCKey = "com.georgeddavies.clearCollectionView"
 
 class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource, CLLocationManagerDelegate, AVSpeechSynthesizerDelegate {
 
@@ -79,9 +80,20 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         // Notification observers for when json data is successfully loaded
         NotificationCenter.default.addObserver(self, selector: #selector(shouldPopulateData), name: NSNotification.Name(rawValue: weatherDataNCKey), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(shouldPopulateData), name: NSNotification.Name(rawValue: hourlyDataNCKey), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(clearCollectionView), name: NSNotification.Name(rawValue: logOutNCKey), object: nil)
+    }
+    
+    func clearCollectionView() {
+        print(55)
+        WeatherData.sharedInstance.weatherArray.removeAll()
+        WeatherData.sharedInstance.hourlyWeather.removeAll()
+        weatherCollectionView.reloadData()
+        print(weatherCollectionView.numberOfItems(inSection: 0))
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         getUserSettings()
         shouldPopulateData()
     }
@@ -156,8 +168,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
             if daysCount != weatherCollectionView.numberOfItems(inSection: 0) {
                 animateLoadingScreenOut()
             }
-            updateLocationNameIfChanged()
-        } else {
+        } else if isHourly {
             if WeatherData.sharedInstance.hourlyWeather.count != weatherCollectionView.numberOfItems(inSection: 0) {
                 animateLoadingScreenOut()
             }
@@ -264,7 +275,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        print(9)
         if segue.identifier == "ShowMapView" {
             if let destinationVC = segue.destination as? MapViewVC {
                 destinationVC.location = locationManager.location
@@ -272,7 +282,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegateFlowLayout,
         }
         if segue.identifier == "ShowSettingsVC" {
             if let destinationVC = segue.destination as? SettingsVC {
-                print(7)
                 destinationVC.userSettingsDict = userSettingsDict
             }
         }
